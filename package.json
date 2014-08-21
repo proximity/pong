@@ -1,0 +1,37 @@
+{
+  "name": "pong",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "bower install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/proximity/pong.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/proximity/pong/issues"
+  },
+  "homepage": "https://github.com/proximity/pong",
+  "private": true,
+  "devDependencies": {
+    "gulp": "^3.8.6",
+    "gulp-util": "^2.2.19",
+    "gulp-watch": "^0.6.2",
+    "gulp-plumber": "^0.6.1",
+    "gulp-ruby-sass": "^0.4.3",
+    "gulp-filesize": "git://github.com/martinhipp/gulp-filesize",
+    "gulp-uglify": "^0.2.1",
+    "gulp-autoprefixer": "0.0.8",
+    "gulp-minify-css": "^0.3.7",
+    "watchify": "^0.10.2",
+    "vinyl-source-stream": "^0.1.1",
+    "vinyl-buffer": "0.0.0",
+    "browserify": "^4.2.0",
+    "browserify-shim": "^3.6.0"
+  }
+}
