@@ -52,7 +52,7 @@ gulp.task('js:watch', function() {
 			})
 			.pipe(source('bundle.js'))
 			.pipe(buffer())
-			.pipe(uglify())
+			//.pipe(uglify())
 			.pipe(size())
 			.pipe(gulp.dest('./public/js'));
 	}
