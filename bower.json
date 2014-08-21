@@ -1,0 +1,29 @@
+{
+  "name": "pong",
+  "version": "0.0.1",
+  "authors": [
+    "jghazally",
+    "martinhipp",
+    "SiWhite",
+    "dylannz"
+  ],
+  "description": "Proximity Pong",
+  "main": "gulpfile.js",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "1.11.1",
+    "backbone": "~1.1.2",
+    "underscore": "~1.6.0",
+    "modernizr": "~2.8.3",
+    "bootstrap-sass-official": "~3.2.0+1"
+  }
+}
