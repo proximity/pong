@@ -1,8 +1,9 @@
 var express = require('express'),
 	path = require('path'),
 	app = express(),
-	argv = require('yargs').default({development: false, port: 8080}).argv,
+	argv = require('yargs').default({port: 8080}).argv,
 	_ = require('underscore');
+	Game = require('./game');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -12,6 +13,6 @@ var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function(socket) {
 
-	console.log('connection made');
+	Game.init(io, socket);
 
 });

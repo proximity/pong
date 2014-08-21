@@ -37,7 +37,7 @@ gulp.task('js', function() {
 		.pipe(buffer())
 		.pipe(uglify())
 		.pipe(size())
-		.pipe(gulp.dest('./js'));
+		.pipe(gulp.dest('./public/js'));
 });
 
 gulp.task('js:watch', function() {

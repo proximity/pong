@@ -40,5 +40,33 @@
     "vinyl-buffer": "0.0.0",
     "browserify": "^4.2.0",
     "browserify-shim": "^3.6.0"
+  },
+  "browser": {
+    "jquery": "./public/bower_components/jquery/dist/jquery.js",
+    "underscore": "./public/bower_components/underscore/underscore.js",
+    "backbone": "./public/bower_components/backbone/backbone.js",
+    "bootstrap": "./public/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "jquery": "$",
+    "underscore": "_",
+    "backbone": {
+      "exports": "Backbone",
+      "depends": [
+        "jquery",
+        "underscore"
+      ]
+    },
+    "bootstrap": {
+      "exports": null,
+      "depends": [
+        "jquery"
+      ]
+    }
   }
 }
