@@ -1,6 +1,6 @@
 var Backbone = require('backbone'),
 	$ = require('jquery'),
-	paddle = require('paddle');
+	paddle = require('./paddle');
 
 
 var _game = {};

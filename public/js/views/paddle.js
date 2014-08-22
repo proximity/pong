@@ -12,4 +12,4 @@ Paddle.prototype.render = function() {
 	context.fillRect(this.x, this.y, this.width, this.height);
 };
 
-module.export = Paddle;
+module.exports = Paddle;

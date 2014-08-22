@@ -1,53 +1,65 @@
-var Game, io, gameSocket;
+var io, gameSocket;
 
-Game.init = function(sio, socket) {
+exports.init = function(sio, socket) {
 	io = sio;
 	gameSocket = socket;
 
 	gameSocket.emit('connected');
 
 	// Host
-	gameSocket.on('hostCreateGame', Game.hostCreateGame);
-	gameSocket.on('hostRoomFull', Game.hostPrepareGame);
-	gameSocket.on('hostCountdownFinished', Game.hostStartGame);
-	// gameSocket.on('hostNextRound', Game.hostNextRound);
+	gameSocket.on('hostCreateGame', hostCreateGame);
+	gameSocket.on('hostRoomFull', hostPrepareGame);
+	gameSocket.on('hostCountdownFinished', hostStartGame);
+	// gameSocket.on('hostNextRound', hostNextRound);
 
 	// Player
-	gameSocket.on('playerJoinGame', Game.playerJoinGame);
-	gameSocket.on('playerMoveUp', Game.playerMoveUp);
-	gameSocket.on('playerMoveDown', Game.playerMoveDown);
-	gameSocket.on('playerRestart', Game.playerRestart);
+	gameSocket.on('playerJoinGame', playerJoinGame);
+	gameSocket.on('playerMoveUp', playerMoveUp);
+	gameSocket.on('playerMoveDown', playerMoveDown);
+	gameSocket.on('playerRestart', playerRestart);
 };
 
-Game.hostCreateGame = function() {
+function hostCreateGame() {
 	var gameId = (Math.random() * 10000) | 0;
 
 	this.emit('newGameCreated', {gameId: gameId, socketId: this.id});
 	this.join(gameId.toString());
-};
+}
 
-Game.hostPrepareGame = function(gameId) {
+function hostPrepareGame(gameId) {
 	io.sockets.in(gameId).emit('beginNewGame', {gameId: gameId, socketId: this.id});
-};
+}
 
-Game.hostStartGame = function() {
+function hostStartGame(gameId) {
 	console.log('Start Game');
-};
+}
 
-Game.playerJoinGame = function() {
+function playerJoinGame(data) {
+	var room = gameSocket.manager.rooms['/' + data.gameId];
 
-};
+	if (undefined !== room) {
+		data.socketId = this.id;
 
-Game.playerMoveUp = function() {
+		this.join(data.gameId);
 
-};
+		io.sockets.in(data.gameId).emit('playerJoined', data);
+	} else {
+		this.emit('error', {message: 'This room does not exist.'});
+	}
+}
 
-Game.playerMoveDown = function() {
+function playerMoveUp(data) {
+	data.playerId = this.id;
 
-};
+	io.sockets.in(data.gameId).emit('hostMovePlayerUp', data);
+}
 
-Game.playerRestart = function() {
+function playerMoveDown(data) {
+	data.playerId = this.id;
 
-};
+	io.sockets.in(data.gameId).emit('hostMovePlayerDown', data);
+}
 
-module.exports = Game;
+function playerRestart(data) {
+
+}
