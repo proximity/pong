@@ -1,14 +1,5 @@
 
 var Paddle = require('./paddle');
-var keysDown = {};
-
-window.addEventListener("keydown", function(event) {
-	keysDown[event.keyCode] = true;
-});
-
-window.addEventListener("keyup", function(event) {
-	delete keysDown[event.keyCode];
-});
 
 function Player(x, y) {
 	this.paddle = new Paddle(x, y, 10, 100);
@@ -18,37 +9,43 @@ Player.prototype.render = function(context) {
 	this.paddle.render(context);
 };
 
-Player.prototype.update = function() {
-	for ( var key in keysDown ) {
-		var value = Number(key) ;
-
-		if ( value == 37 ) { //left arrow
-			this.paddle.move(0, -4, -0.3);
-			return true;
-		} else if ( value == 39 ) {
-			this.paddle.move(0, 4, 0.3);
-			return true;
-		}
-	}
-	this.paddle.move(0, 0, 0);
-};
-
 Player.prototype.pause = function() {
-	console.log('pause paddle');
 	clearInterval(this.movement);
 	this.paddle.move(0, 0, 0);
 };
+
 Player.prototype.moveDown = function() {
 	var that = this;
 	this.movement = setInterval(function(){
 		that.paddle.move(0, 4, -0.3);
 	}, 10);
 };
+
 Player.prototype.moveUp = function() {
 	var that = this;
 	this.movement = setInterval(function(){
 		that.paddle.move(0, -4, 0.3);
 	}, 10);
+};
+
+Player.prototype.update = function(ball) {
+	var y_pos = ball.y;
+	var diff = -((this.paddle.y + (this.paddle.height / 2)) - y_pos);
+	if ( diff < 0 && diff < -4 ) {
+		diff = -5;
+	} else if ( diff > 0 && diff > 4 ) {
+		diff = 5;
+	}
+
+	this.paddle.move(0, diff);
+
+	if ( this.paddle.y < 0 ) {
+		this.paddle.y = 0;
+		console.log('detect1?');
+	} else if ( this.paddle.y + this.paddle.height > $(window).width() ) {
+		console.log('detect?');
+		this.paddle.y = $(window).width() - this.paddle.height;
+	}
 };
 
 

@@ -42,7 +42,6 @@ function playerJoinGame(data) {
 		data.socketId = this.id;
 
 		this.join(data.gameId);
-
 		io.sockets.in(data.gameId).emit('playerJoined', data);
 	} else {
 		this.emit('error', {message: 'This room does not exist'});
@@ -50,19 +49,13 @@ function playerJoinGame(data) {
 }
 
 function playerPause(data) {
-
-	console.log('Pause Player', data);
 	io.sockets.in(data.gameId).emit('hostPausePlayer', data);
 }
 function playerMoveUp(data) {
-
-	console.log('MOVE PLAYER UP', data);
 	io.sockets.in(data.gameId).emit('hostMovePlayerUp', data);
 }
 
 function playerMoveDown(data) {
-
-	console.log('MOVE PLAYER DOWN', data);
 	io.sockets.in(data.gameId).emit('hostMovePlayerDown', data);
 }
 

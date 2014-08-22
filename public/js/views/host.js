@@ -1,16 +1,16 @@
 var Backbone = require('backbone'),
-	GameView = require('./game'),
 	paddle = require('./paddle');
 	Player = require('./player');
 	Ball = require('./ball');
 	$ = require('jquery');
+
 var animate = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
 	window.mozRequestAnimationFrame ||
 	function(callback) { window.setTimeout(callback, 1000/60); };
-
 var context;
 var startHeight = ($(window).height()/2) - 50;
+
 var player1 = new Player(50, startHeight);
 var player2 = new Player($(window).width() - 50, startHeight);
 var ball = new Ball($(window).width()/2, $(window).height()/2);
@@ -22,42 +22,38 @@ var HostView = Backbone.View.extend({
 
 	initialize: function(options) {
 		this.options = options;
+		this.width = $(window).width();
+		this.height = $(window).height();
+
 		this.socket = options.socket;
 
 		this.socket.emit('hostCreateGame');
 		this.socket.on('newGameCreated', $.proxy(this.gameCreated, this));
 
 		this.canvas = document.createElement('canvas');
-		this.width = $(window).width();
-		this.height = $(window).height();
-
 		this.canvas.width = this.width;
 		this.canvas.height = this.height;
 		context = this.canvas.getContext('2d');
 
-		console.log('My socket',this.socket);
 		this.socket.on('hostMovePlayerUp', $.proxy(this.playerMoveUp, this));
 		this.socket.on('hostMovePlayerDown', $.proxy(this.playerMoveDown, this));
 		this.socket.on('hostPausePlayer', $.proxy(this.playerPause, this));
-		this.gameInit();
 	},
 
 	gameCreated: function(data) {
 		$('<h1/>').html(data.gameId).appendTo(this.$el);
+		this.gameInit();
 	},
 
 	playerMoveUp: function() {
-		console.log('halo move up');
 		player1.moveUp();
 	},
 
 	playerPause: function() {
-		console.log('halo pause');
 		player1.pause();
 	},
 
 	playerMoveDown: function() {
-		console.log('halo move down');
 		player1.moveDown();
 	},
 
@@ -73,8 +69,8 @@ var HostView = Backbone.View.extend({
 	},
 
 	update: function() {
+		player2.update(ball);
 		ball.update(player1.paddle, player2.paddle);
-		player1.update();
 	},
 
 	render: function() {

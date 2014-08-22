@@ -66,7 +66,7 @@ Ball.prototype.update = function(paddle1, paddle2) {
 			if ( thisPaddle.y_speed !== 0 ) {
 				// paddles direction is up
 				var paddleDown = thisPaddle.y_speed > 0;
-				this.y_speed += thisPaddle.hit_speed;
+				this.y_speed += (thisPaddle.y_speed/2);
 			}
 
 			this.x_speed *= -1;
