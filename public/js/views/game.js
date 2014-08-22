@@ -49,6 +49,7 @@ var GameView = Backbone.View.extend({
 
 	update: function() {
 		ball.update(player1.paddle, player2.paddle);
+		player1.update();
 	},
 
 	render: function() {

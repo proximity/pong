@@ -1,8 +1,8 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 
-; require("/Users/swhite/Documents/pong/public/bower_components/jquery/dist/jquery.js");
-require("/Users/swhite/Documents/pong/public/bower_components/underscore/underscore.js");
+; require("/Users/jghazally/Documents/Node/pong/public/bower_components/jquery/dist/jquery.js");
+require("/Users/jghazally/Documents/Node/pong/public/bower_components/underscore/underscore.js");
 ;__browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 //     Backbone.js 1.1.2
 
@@ -1618,7 +1618,7 @@ require("/Users/swhite/Documents/pong/public/bower_components/underscore/undersc
 }).call(global, undefined, undefined, undefined, undefined, function defineExport(ex) { module.exports = ex; });
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"/Users/swhite/Documents/pong/public/bower_components/jquery/dist/jquery.js":2,"/Users/swhite/Documents/pong/public/bower_components/underscore/underscore.js":3}],2:[function(require,module,exports){
+},{"/Users/jghazally/Documents/Node/pong/public/bower_components/jquery/dist/jquery.js":2,"/Users/jghazally/Documents/Node/pong/public/bower_components/underscore/underscore.js":3}],2:[function(require,module,exports){
 (function (global){
 ;__browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 /*!
@@ -13324,6 +13324,7 @@ $(function() {
 	if (Modernizr.touch) {
 		var phone = new PhoneView();
 	} else {
+		$('#mobile-container').remove();
 		var host = new HostView();
 	}
 });
@@ -13368,7 +13369,6 @@ Ball.prototype.update = function(paddle1, paddle2) {
 	// ball hits right paddle
 	// ball hits top
 	// ball hits floor
-	/*
 	if ( this.y - 5 < 0 ) {
 		// player 2 scores
 		this.y = 5;
@@ -13380,19 +13380,21 @@ Ball.prototype.update = function(paddle1, paddle2) {
 		this.y = $(window).height() - 5;
 		this.y_speed = - this.y_speed;
 	}
-	*/
-
 
 	if ( checkPaddle1 || checkPaddle2 ) {
 		// check if the ball has been blocked
-		if ( checkPaddle1 ) {
-			checkPaddleTop = paddle1.y;
-			checkPaddleBottom = paddle1.y + paddle1.height;
-		} else {
-			checkPaddleTop = paddle2.y;
-			checkPaddleBottom = paddle2.y + paddle2.height;
-		}
+		thisPaddle = checkPaddle1 ? paddle1 : paddle2;
+
+		checkPaddleBottom = thisPaddle.y + thisPaddle.height;
+		checkPaddleTop = thisPaddle.y;
+
 		if ( checkPaddleTop < bottom_y && checkPaddleBottom > top_y ) {
+			if ( thisPaddle.y_speed !== 0 ) {
+				// paddles direction is up
+				var paddleDown = thisPaddle.y_speed > 0;
+				this.y_speed += paddleDown ? 3 : -3;
+			}
+
 			this.x_speed *= -1;
 		}
 		if ( checkScore1 || checkScore2 ) {
@@ -13467,6 +13469,7 @@ var GameView = Backbone.View.extend({
 
 	update: function() {
 		ball.update(player1.paddle, player2.paddle);
+		player1.update();
 	},
 
 	render: function() {
@@ -13496,6 +13499,7 @@ var HostView = Backbone.View.extend({
 module.exports = HostView;
 
 },{"./game":7,"backbone":1,"jquery":2}],9:[function(require,module,exports){
+var $ = require('jquery');
 
 function Paddle(x, y, width, height) {
 	this.x = x;
@@ -13512,9 +13516,30 @@ Paddle.prototype.render = function(context) {
 	context.fillRect(this.x, this.y, this.width, this.height);
 };
 
+Paddle.prototype.move = function(x, y) {
+	this.x += x;
+	this.y += y;
+	this.x_speed = x;
+	this.y_speed = y;
+
+	if ( this.y < 0 ) {
+		this.y = 0;
+		this.y_speed = 0;
+	} else if ( this.y + this.height > $(window).height() ) {
+		this.y = $(window).height() - this.height;
+		this.y_speed = 0 ;
+	}
+	console.log(this.y_speed, this.x_speed);
+};
+
+Paddle.prototype.stop = function() {
+	this.y_speed = 0;
+};
+
+
 module.exports = Paddle;
 
-},{}],10:[function(require,module,exports){
+},{"jquery":2}],10:[function(require,module,exports){
 var Backbone = require('backbone');
 
 var PhoneView = Backbone.View.extend({
@@ -13537,6 +13562,15 @@ module.exports = PhoneView;
 },{"backbone":1}],11:[function(require,module,exports){
 
 var Paddle = require('./paddle');
+var keysDown = {};
+
+window.addEventListener("keydown", function(event) {
+	keysDown[event.keyCode] = true;
+});
+
+window.addEventListener("keyup", function(event) {
+	delete keysDown[event.keyCode];
+});
 
 function Player(x, y) {
 	console.log('paddles');
@@ -13546,6 +13580,22 @@ function Player(x, y) {
 Player.prototype.render = function(context) {
 	this.paddle.render(context);
 };
+
+Player.prototype.update = function() {
+	for ( var key in keysDown ) {
+		var value = Number(key) ;
+
+		if ( value == 37 ) { //left arrow
+			this.paddle.move(0, -4);
+			return true;
+		} else if ( value == 39 ) {
+			this.paddle.move(0, 4);
+			return true;
+		}
+	}
+	this.paddle.move(0,0);
+};
+
 
 module.exports = Player;
 

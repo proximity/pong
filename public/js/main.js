@@ -11,6 +11,7 @@ $(function() {
 	if (Modernizr.touch) {
 		var phone = new PhoneView();
 	} else {
+		$('#mobile-container').remove();
 		var host = new HostView();
 	}
 });

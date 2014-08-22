@@ -36,7 +36,6 @@ Ball.prototype.update = function(paddle1, paddle2) {
 	// ball hits right paddle
 	// ball hits top
 	// ball hits floor
-	/*
 	if ( this.y - 5 < 0 ) {
 		// player 2 scores
 		this.y = 5;
@@ -48,19 +47,21 @@ Ball.prototype.update = function(paddle1, paddle2) {
 		this.y = $(window).height() - 5;
 		this.y_speed = - this.y_speed;
 	}
-	*/
-
 
 	if ( checkPaddle1 || checkPaddle2 ) {
 		// check if the ball has been blocked
-		if ( checkPaddle1 ) {
-			checkPaddleTop = paddle1.y;
-			checkPaddleBottom = paddle1.y + paddle1.height;
-		} else {
-			checkPaddleTop = paddle2.y;
-			checkPaddleBottom = paddle2.y + paddle2.height;
-		}
+		thisPaddle = checkPaddle1 ? paddle1 : paddle2;
+
+		checkPaddleBottom = thisPaddle.y + thisPaddle.height;
+		checkPaddleTop = thisPaddle.y;
+
 		if ( checkPaddleTop < bottom_y && checkPaddleBottom > top_y ) {
+			if ( thisPaddle.y_speed !== 0 ) {
+				// paddles direction is up
+				var paddleDown = thisPaddle.y_speed > 0;
+				this.y_speed += paddleDown ? 3 : -3;
+			}
+
 			this.x_speed *= -1;
 		}
 		if ( checkScore1 || checkScore2 ) {
