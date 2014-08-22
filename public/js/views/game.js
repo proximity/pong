@@ -1,7 +1,8 @@
 var Backbone = require('backbone'),
 	$ = require('jquery'),
 	paddle = require('./paddle');
-
+	Player = require('./player');
+	Ball = require('./ball');
 
 var _game = {};
 
@@ -9,6 +10,12 @@ var animate = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
 	window.mozRequestAnimationFrame ||
 	function(callback) { window.setTimeout(callback, 1000/60); };
+
+var context;
+var startHeight = ($(window).height()/2) -50;
+var player1 = new Player(50, startHeight);
+var player2 = new Player($(window).width() - 50, startHeight);
+var ball = new Ball($(window).width()/2, $(window).height()/2);
 
 var GameView = Backbone.View.extend({
 	el: 'body',
@@ -23,7 +30,7 @@ var GameView = Backbone.View.extend({
 
 		this.canvas.width = this.width;
 		this.canvas.height = this.height;
-		this.context = this.canvas.getContext('2d');
+		context = this.canvas.getContext('2d');
 
 		window.onload = this.gameInit;
 	},
@@ -41,11 +48,15 @@ var GameView = Backbone.View.extend({
 	},
 
 	update: function() {
+		ball.update(player1.paddle, player2.paddle);
 	},
 
 	render: function() {
-		_game.context.fillStyle = '#000';
-		_game.context.fillRect(0, 0, _game.width, _game.height);
+		context.fillStyle = '#000';
+		context.fillRect(0, 0, _game.width, _game.height);
+		player1.render(context);
+		player2.render(context);
+		ball.render(context);
 	}
 
 });
