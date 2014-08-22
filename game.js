@@ -16,6 +16,7 @@ exports.init = function(sio, socket) {
 	gameSocket.on('playerJoinGame', playerJoinGame);
 	gameSocket.on('playerMoveUp', playerMoveUp);
 	gameSocket.on('playerMoveDown', playerMoveDown);
+	gameSocket.on('playerPause', playerPause);
 	gameSocket.on('playerRestart', playerRestart);
 };
 
@@ -48,6 +49,11 @@ function playerJoinGame(data) {
 	}
 }
 
+function playerPause(data) {
+
+	console.log('Pause Player', data);
+	io.sockets.in(data.gameId).emit('hostPausePlayer', data);
+}
 function playerMoveUp(data) {
 
 	console.log('MOVE PLAYER UP', data);

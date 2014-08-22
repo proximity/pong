@@ -13465,6 +13465,7 @@ var HostView = Backbone.View.extend({
 		console.log('My socket',this.socket);
 		this.socket.on('hostMovePlayerUp', $.proxy(this.playerMoveUp, this));
 		this.socket.on('hostMovePlayerDown', $.proxy(this.playerMoveDown, this));
+		this.socket.on('hostPausePlayer', $.proxy(this.playerPause, this));
 		this.gameInit();
 	},
 
@@ -13475,6 +13476,11 @@ var HostView = Backbone.View.extend({
 	playerMoveUp: function() {
 		console.log('halo move up');
 		player1.moveUp();
+	},
+
+	playerPause: function() {
+		console.log('halo pause');
+		player1.pause();
 	},
 
 	playerMoveDown: function() {
@@ -13579,7 +13585,8 @@ var PhoneView = Backbone.View.extend({
 
 	events: {
 		'touchstart #mobile-container-top': 'movePlayerUp',
-		'touchstart #mobile-container-bottom': 'movePlayerDown'
+		'touchstart #mobile-container-bottom': 'movePlayerDown',
+		'touchend': 'pausePlayer'
 	},
 
 	template: _.template($('#phone-view-template').html()),
@@ -13606,6 +13613,16 @@ var PhoneView = Backbone.View.extend({
 		return this;
 	},
 
+	pausePlayer: function() {
+		var data = {
+			gameId: this.gameId,
+			playerId: this.socketId
+		}
+
+		console.log('pause');
+
+		this.socket.emit('playerPause', data);
+	},
 	movePlayerUp: function() {
 		var data = {
 			gameId: this.gameId,
@@ -13667,11 +13684,22 @@ Player.prototype.update = function() {
 	this.paddle.move(0, 0, 0);
 };
 
+Player.prototype.pause = function() {
+	console.log('pause paddle');
+	clearInterval(this.movement);
+	this.paddle.move(0, 0, 0);
+};
 Player.prototype.moveDown = function() {
-	this.paddle.move(0, 4, -0.3);
+	var that = this;
+	this.movement = setInterval(function(){
+		that.paddle.move(0, 4, -0.3);
+	}, 10);
 };
 Player.prototype.moveUp = function() {
-	this.paddle.move(0, -4, 0.3);
+	var that = this;
+	this.movement = setInterval(function(){
+		that.paddle.move(0, -4, 0.3);
+	}, 10);
 };
 
 

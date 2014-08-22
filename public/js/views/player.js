@@ -33,11 +33,22 @@ Player.prototype.update = function() {
 	this.paddle.move(0, 0, 0);
 };
 
+Player.prototype.pause = function() {
+	console.log('pause paddle');
+	clearInterval(this.movement);
+	this.paddle.move(0, 0, 0);
+};
 Player.prototype.moveDown = function() {
-	this.paddle.move(0, 4, -0.3);
+	var that = this;
+	this.movement = setInterval(function(){
+		that.paddle.move(0, 4, -0.3);
+	}, 10);
 };
 Player.prototype.moveUp = function() {
-	this.paddle.move(0, -4, 0.3);
+	var that = this;
+	this.movement = setInterval(function(){
+		that.paddle.move(0, -4, 0.3);
+	}, 10);
 };
 
 

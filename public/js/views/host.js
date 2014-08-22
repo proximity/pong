@@ -38,6 +38,7 @@ var HostView = Backbone.View.extend({
 		console.log('My socket',this.socket);
 		this.socket.on('hostMovePlayerUp', $.proxy(this.playerMoveUp, this));
 		this.socket.on('hostMovePlayerDown', $.proxy(this.playerMoveDown, this));
+		this.socket.on('hostPausePlayer', $.proxy(this.playerPause, this));
 		this.gameInit();
 	},
 
@@ -48,6 +49,11 @@ var HostView = Backbone.View.extend({
 	playerMoveUp: function() {
 		console.log('halo move up');
 		player1.moveUp();
+	},
+
+	playerPause: function() {
+		console.log('halo pause');
+		player1.pause();
 	},
 
 	playerMoveDown: function() {
