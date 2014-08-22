@@ -12,7 +12,7 @@ var animate = window.requestAnimationFrame ||
 	function(callback) { window.setTimeout(callback, 1000/60); };
 
 var context;
-var startHeight = ($(window).height()/2) -50;
+var startHeight = ($(window).height()/2) - 50;
 var player1 = new Player(50, startHeight);
 var player2 = new Player($(window).width() - 50, startHeight);
 var ball = new Ball($(window).width()/2, $(window).height()/2);
