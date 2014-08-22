@@ -21,8 +21,9 @@ var GameView = Backbone.View.extend({
 	el: 'body',
 	width: 400,
 	height: 600,
-	initialize: function() {
+	initialize: function(options) {
 		_game = this;
+		this.socket = options.socket;
 
 		this.canvas = document.createElement('canvas');
 		this.width = $(window).width();
@@ -32,7 +33,16 @@ var GameView = Backbone.View.extend({
 		this.canvas.height = this.height;
 		context = this.canvas.getContext('2d');
 
+		this.socket.on('playerMoveUp', $.proxy(this.playerMoveUp, this));
 		this.gameInit();
+	},
+
+	playerModeUp: function() {
+		player1.moveUp();
+	},
+
+	playerModeDown: function() {
+		player1.moveDown();
 	},
 
 	gameInit: function() {

@@ -22,8 +22,8 @@ exports.init = function(sio, socket) {
 function hostCreateGame() {
 	var gameId = (Math.random() * 10000) | 0;
 
-	this.emit('newGameCreated', {gameId: gameId, socketId: this.id});
 	this.join(gameId.toString());
+	this.emit('newGameCreated', {gameId: gameId, socketId: this.id});
 }
 
 function hostPrepareGame(gameId) {

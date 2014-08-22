@@ -11,7 +11,6 @@ window.addEventListener("keyup", function(event) {
 });
 
 function Player(x, y) {
-	console.log('paddles');
 	this.paddle = new Paddle(x, y, 10, 100);
 }
 
@@ -24,7 +23,7 @@ Player.prototype.update = function() {
 		var value = Number(key) ;
 
 		if ( value == 37 ) { //left arrow
-			this.paddle.move(0, -4, -0.1);
+			this.paddle.move(0, -4, -0.3);
 			return true;
 		} else if ( value == 39 ) {
 			this.paddle.move(0, 4, 0.3);
@@ -32,6 +31,13 @@ Player.prototype.update = function() {
 		}
 	}
 	this.paddle.move(0, 0, 0);
+};
+
+Player.prototype.moveDown = function() {
+	this.paddle.move(0, 4, -0.3);
+};
+Player.prototype.moveUp = function() {
+	this.paddle.move(0, 4, 0.3);
 };
 
 
