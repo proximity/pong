@@ -1,14 +1,14 @@
 var Backbone = require('backbone'),
-	paddle = require('./paddle');
-	Player = require('./player');
-	Ball = require('./ball');
+	paddle = require('../objects/paddle');
+	Player = require('../objects/player');
+	Ball = require('../objects/ball');
 	$ = require('jquery');
 
+var context;
 var animate = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
 	window.mozRequestAnimationFrame ||
 	function(callback) { window.setTimeout(callback, 1000/60); };
-var context;
 var startHeight = ($(window).height()/2) - 50;
 
 var player1 = new Player(50, startHeight);
@@ -17,8 +17,6 @@ var ball = new Ball($(window).width()/2, $(window).height()/2);
 
 var HostView = Backbone.View.extend({
 	el: 'body',
-
-	gameId: 0,
 
 	initialize: function(options) {
 		this.options = options;

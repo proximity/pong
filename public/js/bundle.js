@@ -13311,7 +13311,7 @@ $(function() {
 });
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./views/host":6,"./views/phone":8,"jquery":2}],5:[function(require,module,exports){
+},{"./views/host":8,"./views/phone":9,"jquery":2}],5:[function(require,module,exports){
 var $ = require('jquery');
 
 function Ball(x, y) {
@@ -13406,17 +13406,118 @@ Ball.prototype.update = function(paddle1, paddle2) {
 module.exports = Ball;
 
 },{"jquery":2}],6:[function(require,module,exports){
+var $ = require('jquery');
+
+function Paddle(x, y, width, height) {
+	this.x = x;
+	this.y = y;
+	this.width = width;
+	this.height = height;
+	this.x_speed = 0;
+	this.y_speed = 0;
+	this.hit_speed = 0;
+}
+
+
+Paddle.prototype.render = function(context) {
+	context.fillStyle = "#fff";
+	context.fillRect(this.x, this.y, this.width, this.height);
+};
+
+Paddle.prototype.move = function(x, y, s) {
+	this.x += x;
+	this.y += y;
+	this.x_speed = x;
+	this.y_speed = y;
+
+	if ( this.y < 0 ) {
+		this.y = 0;
+		this.y_speed = 0;
+		this.hit_speed = 0;
+	} else if ( this.y + this.height > $(window).height() ) {
+		this.y = $(window).height() - this.height;
+		this.y_speed = 0;
+		this.hit_speed = 0;
+	} else if ( s === 0 ) {
+		this.hit_speed = 0;
+	} else {
+		this.hit_speed += s;
+	}
+};
+
+Paddle.prototype.stop = function() {
+	this.y_speed = 0;
+};
+
+
+module.exports = Paddle;
+
+},{"jquery":2}],7:[function(require,module,exports){
+
+var Paddle = require('./paddle');
+
+function Player(x, y) {
+	this.paddle = new Paddle(x, y, 10, 100);
+}
+
+Player.prototype.render = function(context) {
+	this.paddle.render(context);
+};
+
+Player.prototype.pause = function() {
+	clearInterval(this.movement);
+	this.paddle.move(0, 0, 0);
+};
+
+Player.prototype.moveDown = function() {
+	var that = this;
+	this.movement = setInterval(function(){
+		that.paddle.move(0, 4, -0.3);
+	}, 10);
+};
+
+Player.prototype.moveUp = function() {
+	var that = this;
+	this.movement = setInterval(function(){
+		that.paddle.move(0, -4, 0.3);
+	}, 10);
+};
+
+Player.prototype.update = function(ball) {
+	var y_pos = ball.y;
+	var diff = -((this.paddle.y + (this.paddle.height / 2)) - y_pos);
+	if ( diff < 0 && diff < -4 ) {
+		diff = -5;
+	} else if ( diff > 0 && diff > 4 ) {
+		diff = 5;
+	}
+
+	this.paddle.move(0, diff);
+
+	if ( this.paddle.y < 0 ) {
+		this.paddle.y = 0;
+		console.log('detect1?');
+	} else if ( this.paddle.y + this.paddle.height > $(window).width() ) {
+		console.log('detect?');
+		this.paddle.y = $(window).width() - this.paddle.height;
+	}
+};
+
+
+module.exports = Player;
+
+},{"./paddle":6}],8:[function(require,module,exports){
 var Backbone = require('backbone'),
-	paddle = require('./paddle');
-	Player = require('./player');
-	Ball = require('./ball');
+	paddle = require('../objects/paddle');
+	Player = require('../objects/player');
+	Ball = require('../objects/ball');
 	$ = require('jquery');
 
+var context;
 var animate = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
 	window.mozRequestAnimationFrame ||
 	function(callback) { window.setTimeout(callback, 1000/60); };
-var context;
 var startHeight = ($(window).height()/2) - 50;
 
 var player1 = new Player(50, startHeight);
@@ -13425,8 +13526,6 @@ var ball = new Ball($(window).width()/2, $(window).height()/2);
 
 var HostView = Backbone.View.extend({
 	el: 'body',
-
-	gameId: 0,
 
 	initialize: function(options) {
 		this.options = options;
@@ -13492,54 +13591,7 @@ var HostView = Backbone.View.extend({
 
 module.exports = HostView;
 
-},{"./ball":5,"./paddle":7,"./player":9,"backbone":1,"jquery":2}],7:[function(require,module,exports){
-var $ = require('jquery');
-
-function Paddle(x, y, width, height) {
-	this.x = x;
-	this.y = y;
-	this.width = width;
-	this.height = height;
-	this.x_speed = 0;
-	this.y_speed = 0;
-	this.hit_speed = 0;
-}
-
-
-Paddle.prototype.render = function(context) {
-	context.fillStyle = "#fff";
-	context.fillRect(this.x, this.y, this.width, this.height);
-};
-
-Paddle.prototype.move = function(x, y, s) {
-	this.x += x;
-	this.y += y;
-	this.x_speed = x;
-	this.y_speed = y;
-
-	if ( this.y < 0 ) {
-		this.y = 0;
-		this.y_speed = 0;
-		this.hit_speed = 0;
-	} else if ( this.y + this.height > $(window).height() ) {
-		this.y = $(window).height() - this.height;
-		this.y_speed = 0;
-		this.hit_speed = 0;
-	} else if ( s === 0 ) {
-		this.hit_speed = 0;
-	} else {
-		this.hit_speed += s;
-	}
-};
-
-Paddle.prototype.stop = function() {
-	this.y_speed = 0;
-};
-
-
-module.exports = Paddle;
-
-},{"jquery":2}],8:[function(require,module,exports){
+},{"../objects/ball":5,"../objects/paddle":6,"../objects/player":7,"backbone":1,"jquery":2}],9:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 
@@ -13620,58 +13672,4 @@ var PhoneView = Backbone.View.extend({
 
 module.exports = PhoneView;
 
-},{"backbone":1,"underscore":3}],9:[function(require,module,exports){
-
-var Paddle = require('./paddle');
-
-function Player(x, y) {
-	this.paddle = new Paddle(x, y, 10, 100);
-}
-
-Player.prototype.render = function(context) {
-	this.paddle.render(context);
-};
-
-Player.prototype.pause = function() {
-	clearInterval(this.movement);
-	this.paddle.move(0, 0, 0);
-};
-
-Player.prototype.moveDown = function() {
-	var that = this;
-	this.movement = setInterval(function(){
-		that.paddle.move(0, 4, -0.3);
-	}, 10);
-};
-
-Player.prototype.moveUp = function() {
-	var that = this;
-	this.movement = setInterval(function(){
-		that.paddle.move(0, -4, 0.3);
-	}, 10);
-};
-
-Player.prototype.update = function(ball) {
-	var y_pos = ball.y;
-	var diff = -((this.paddle.y + (this.paddle.height / 2)) - y_pos);
-	if ( diff < 0 && diff < -4 ) {
-		diff = -5;
-	} else if ( diff > 0 && diff > 4 ) {
-		diff = 5;
-	}
-
-	this.paddle.move(0, diff);
-
-	if ( this.paddle.y < 0 ) {
-		this.paddle.y = 0;
-		console.log('detect1?');
-	} else if ( this.paddle.y + this.paddle.height > $(window).width() ) {
-		console.log('detect?');
-		this.paddle.y = $(window).width() - this.paddle.height;
-	}
-};
-
-
-module.exports = Player;
-
-},{"./paddle":7}]},{},[4])
+},{"backbone":1,"underscore":3}]},{},[4])
