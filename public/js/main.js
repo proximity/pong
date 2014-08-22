@@ -1,17 +1,20 @@
 var $ = require('jquery'),
-	IO = require('./io'),
 	Modernizr = require('modernizr'),
 	HostView = require('./views/host'),
 	PhoneView = require('./views/phone');
 
 $(function() {
-	IO.init();
+	var socket = io.connect();
 
-	// Switch between host and player
-	if (Modernizr.touch) {
-		var phone = new PhoneView();
-	} else {
-		$('#mobile-container').remove();
-		var host = new HostView();
-	}
+	socket.on('connected', function () {
+		var options = {
+			socket: this
+		};
+
+		if (Modernizr.touch) {
+			var phone = new PhoneView(options);
+		} else {
+			var host = new HostView(options);
+		}
+	});
 });
