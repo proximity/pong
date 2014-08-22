@@ -25,6 +25,8 @@ Ball.prototype.update = function(paddle1, paddle2) {
 
 	var checkPaddle1 = this.x - 65 < 0;
 	var checkPaddle2 = this.x + 55 > $(window).width();
+	var checkBehindPaddle1 = this.x - 60 < 0;
+	var checkBehindPaddle2 = this.x + 50 > $(window).width();
 	var checkScore1 = this.x < 0;
 	var checkScore2 = this.x > $(window).width();
 
@@ -55,11 +57,16 @@ Ball.prototype.update = function(paddle1, paddle2) {
 		checkPaddleBottom = thisPaddle.y + thisPaddle.height;
 		checkPaddleTop = thisPaddle.y;
 
-		if ( checkPaddleTop < bottom_y && checkPaddleBottom > top_y ) {
+		if (
+				checkPaddleTop < bottom_y &&
+				checkPaddleBottom > top_y &&
+				!checkBehindPaddle1 &&
+				!checkBehindPaddle2
+			) {
 			if ( thisPaddle.y_speed !== 0 ) {
 				// paddles direction is up
 				var paddleDown = thisPaddle.y_speed > 0;
-				this.y_speed += paddleDown ? 3 : -3;
+				this.y_speed += thisPaddle.hit_speed;
 			}
 
 			this.x_speed *= -1;

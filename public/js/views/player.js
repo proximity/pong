@@ -24,14 +24,14 @@ Player.prototype.update = function() {
 		var value = Number(key) ;
 
 		if ( value == 37 ) { //left arrow
-			this.paddle.move(0, -4);
+			this.paddle.move(0, -4, -0.1);
 			return true;
 		} else if ( value == 39 ) {
-			this.paddle.move(0, 4);
+			this.paddle.move(0, 4, 0.3);
 			return true;
 		}
 	}
-	this.paddle.move(0,0);
+	this.paddle.move(0, 0, 0);
 };
 
 

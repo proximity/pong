@@ -7,6 +7,7 @@ function Paddle(x, y, width, height) {
 	this.height = height;
 	this.x_speed = 0;
 	this.y_speed = 0;
+	this.hit_speed = 0;
 }
 
 
@@ -15,7 +16,7 @@ Paddle.prototype.render = function(context) {
 	context.fillRect(this.x, this.y, this.width, this.height);
 };
 
-Paddle.prototype.move = function(x, y) {
+Paddle.prototype.move = function(x, y, s) {
 	this.x += x;
 	this.y += y;
 	this.x_speed = x;
@@ -24,11 +25,16 @@ Paddle.prototype.move = function(x, y) {
 	if ( this.y < 0 ) {
 		this.y = 0;
 		this.y_speed = 0;
+		this.hit_speed = 0;
 	} else if ( this.y + this.height > $(window).height() ) {
 		this.y = $(window).height() - this.height;
-		this.y_speed = 0 ;
+		this.y_speed = 0;
+		this.hit_speed = 0;
+	} else if ( s === 0 ) {
+		this.hit_speed = 0;
+	} else {
+		this.hit_speed += s;
 	}
-	console.log(this.y_speed, this.x_speed);
 };
 
 Paddle.prototype.stop = function() {

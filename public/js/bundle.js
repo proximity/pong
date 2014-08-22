@@ -1,8 +1,8 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 
-; require("/Users/jghazally/Documents/Node/pong/public/bower_components/jquery/dist/jquery.js");
-require("/Users/jghazally/Documents/Node/pong/public/bower_components/underscore/underscore.js");
+; require("/Users/djennings/Sites/pong/public/bower_components/jquery/dist/jquery.js");
+require("/Users/djennings/Sites/pong/public/bower_components/underscore/underscore.js");
 ;__browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 //     Backbone.js 1.1.2
 
@@ -1618,7 +1618,7 @@ require("/Users/jghazally/Documents/Node/pong/public/bower_components/underscore
 }).call(global, undefined, undefined, undefined, undefined, function defineExport(ex) { module.exports = ex; });
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"/Users/jghazally/Documents/Node/pong/public/bower_components/jquery/dist/jquery.js":2,"/Users/jghazally/Documents/Node/pong/public/bower_components/underscore/underscore.js":3}],2:[function(require,module,exports){
+},{"/Users/djennings/Sites/pong/public/bower_components/jquery/dist/jquery.js":2,"/Users/djennings/Sites/pong/public/bower_components/underscore/underscore.js":3}],2:[function(require,module,exports){
 (function (global){
 ;__browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 /*!
@@ -13339,6 +13339,8 @@ Ball.prototype.update = function(paddle1, paddle2) {
 
 	var checkPaddle1 = this.x - 65 < 0;
 	var checkPaddle2 = this.x + 55 > $(window).width();
+	var checkBehindPaddle1 = this.x - 60 < 0;
+	var checkBehindPaddle2 = this.x + 50 > $(window).width();
 	var checkScore1 = this.x < 0;
 	var checkScore2 = this.x > $(window).width();
 
@@ -13369,11 +13371,16 @@ Ball.prototype.update = function(paddle1, paddle2) {
 		checkPaddleBottom = thisPaddle.y + thisPaddle.height;
 		checkPaddleTop = thisPaddle.y;
 
-		if ( checkPaddleTop < bottom_y && checkPaddleBottom > top_y ) {
+		if (
+				checkPaddleTop < bottom_y &&
+				checkPaddleBottom > top_y &&
+				!checkBehindPaddle1 &&
+				!checkBehindPaddle2
+			) {
 			if ( thisPaddle.y_speed !== 0 ) {
 				// paddles direction is up
 				var paddleDown = thisPaddle.y_speed > 0;
-				this.y_speed += paddleDown ? 3 : -3;
+				this.y_speed += thisPaddle.hit_speed;
 			}
 
 			this.x_speed *= -1;
@@ -13499,6 +13506,7 @@ function Paddle(x, y, width, height) {
 	this.height = height;
 	this.x_speed = 0;
 	this.y_speed = 0;
+	this.hit_speed = 0;
 }
 
 
@@ -13507,7 +13515,7 @@ Paddle.prototype.render = function(context) {
 	context.fillRect(this.x, this.y, this.width, this.height);
 };
 
-Paddle.prototype.move = function(x, y) {
+Paddle.prototype.move = function(x, y, s) {
 	this.x += x;
 	this.y += y;
 	this.x_speed = x;
@@ -13516,11 +13524,16 @@ Paddle.prototype.move = function(x, y) {
 	if ( this.y < 0 ) {
 		this.y = 0;
 		this.y_speed = 0;
+		this.hit_speed = 0;
 	} else if ( this.y + this.height > $(window).height() ) {
 		this.y = $(window).height() - this.height;
-		this.y_speed = 0 ;
+		this.y_speed = 0;
+		this.hit_speed = 0;
+	} else if ( s === 0 ) {
+		this.hit_speed = 0;
+	} else {
+		this.hit_speed += s;
 	}
-	console.log(this.y_speed, this.x_speed);
 };
 
 Paddle.prototype.stop = function() {
@@ -13626,14 +13639,14 @@ Player.prototype.update = function() {
 		var value = Number(key) ;
 
 		if ( value == 37 ) { //left arrow
-			this.paddle.move(0, -4);
+			this.paddle.move(0, -4, -0.1);
 			return true;
 		} else if ( value == 39 ) {
-			this.paddle.move(0, 4);
+			this.paddle.move(0, 4, 0.3);
 			return true;
 		}
 	}
-	this.paddle.move(0,0);
+	this.paddle.move(0, 0, 0);
 };
 
 
