@@ -9,7 +9,7 @@ var HostView = Backbone.View.extend({
 
 	initialize: function(options) {
 		this.socket = options.socket;
-		//this.game = new GameView();
+		this.game = new GameView();
 
 		this.socket.emit('hostCreateNewGame');
 

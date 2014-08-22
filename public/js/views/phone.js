@@ -36,6 +36,8 @@ var PhoneView = Backbone.View.extend({
 		this.socket = options.socket;
 		this.socketId = this.socket.socket.sessionid;
 
+		this.socket.emit('playerJoinGame', {gameId: gameId});
+
 		this.render();
 	},
 
@@ -51,7 +53,9 @@ var PhoneView = Backbone.View.extend({
 			playerId: this.socketId
 		}
 
-		this.socket.emit('hostMovePlayerUp', data);
+		console.log(data);
+
+		this.socket.emit('playerMoveUp', data);
 	},
 
 	movePlayerDown: function() {
@@ -60,7 +64,9 @@ var PhoneView = Backbone.View.extend({
 			playerId: this.socketId
 		}
 
-		this.socket.emit('hostMovePlayerDown', data);
+		console.log(data);
+
+		this.socket.emit('playerMoveDown', data);
 	}
 });
 
