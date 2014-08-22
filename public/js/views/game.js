@@ -32,7 +32,7 @@ var GameView = Backbone.View.extend({
 		this.canvas.height = this.height;
 		context = this.canvas.getContext('2d');
 
-		window.onload = this.gameInit;
+		this.gameInit();
 	},
 
 	gameInit: function() {

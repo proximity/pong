@@ -4,9 +4,12 @@ var Backbone = require('backbone'),
 
 var HostView = Backbone.View.extend({
 	el: 'body',
+
+	gameId: 0,
+
 	initialize: function(options) {
 		this.socket = options.socket;
-		this.game = new GameView();
+		//this.game = new GameView();
 
 		this.socket.emit('hostCreateNewGame');
 

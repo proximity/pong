@@ -12,7 +12,7 @@ function getParams() {
 }
 
 var PhoneView = Backbone.View.extend({
-	el: '#page',
+	el: 'body',
 
 	gameId: 0,
 
