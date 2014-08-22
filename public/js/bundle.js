@@ -1,8 +1,8 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 
-; require("/Users/jghazally/Documents/Node/pong/public/bower_components/jquery/dist/jquery.js");
-require("/Users/jghazally/Documents/Node/pong/public/bower_components/underscore/underscore.js");
+; require("/Users/swhite/Documents/pong/public/bower_components/jquery/dist/jquery.js");
+require("/Users/swhite/Documents/pong/public/bower_components/underscore/underscore.js");
 ;__browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 //     Backbone.js 1.1.2
 
@@ -1618,7 +1618,7 @@ require("/Users/jghazally/Documents/Node/pong/public/bower_components/underscore
 }).call(global, undefined, undefined, undefined, undefined, function defineExport(ex) { module.exports = ex; });
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"/Users/jghazally/Documents/Node/pong/public/bower_components/jquery/dist/jquery.js":2,"/Users/jghazally/Documents/Node/pong/public/bower_components/underscore/underscore.js":3}],2:[function(require,module,exports){
+},{"/Users/swhite/Documents/pong/public/bower_components/jquery/dist/jquery.js":2,"/Users/swhite/Documents/pong/public/bower_components/underscore/underscore.js":3}],2:[function(require,module,exports){
 (function (global){
 ;__browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 /*!
@@ -13464,8 +13464,16 @@ var Backbone = require('backbone');
 var PhoneView = Backbone.View.extend({
 	el: 'body',
 	initialize: function() {
-		console.log('here phone');
-	},
+
+		$('#mobile-container-top').on('touchstart', function() {
+			console.log('touch top');
+		});
+
+		$('#mobile-container-bottom').on('touchstart', function() {
+			console.log('touch bottom');
+		});
+
+	}
 });
 
 module.exports = PhoneView;
