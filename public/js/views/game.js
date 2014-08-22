@@ -33,15 +33,19 @@ var GameView = Backbone.View.extend({
 		this.canvas.height = this.height;
 		context = this.canvas.getContext('2d');
 
-		this.socket.on('playerMoveUp', $.proxy(this.playerMoveUp, this));
+		console.log('My socket',this.socket);
+		this.socket.on('hostMovePlayerUp', $.proxy(this.playerMoveUp, this));
+		this.socket.on('hostMovePlayerDown', $.proxy(this.playerMoveDown, this));
 		this.gameInit();
 	},
 
 	playerModeUp: function() {
+		console.log('halo move up');
 		player1.moveUp();
 	},
 
 	playerModeDown: function() {
+		console.log('halo move down');
 		player1.moveDown();
 	},
 

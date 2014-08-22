@@ -22,7 +22,7 @@ exports.init = function(sio, socket) {
 function hostCreateGame() {
 	var gameId = (Math.random() * 10000) | 0;
 
-	this.join(gameId.toString());
+	this.join(gameId);
 	this.emit('newGameCreated', {gameId: gameId, socketId: this.id});
 }
 
@@ -51,7 +51,6 @@ function playerJoinGame(data) {
 }
 
 function playerMoveUp(data) {
-	data.playerId = this.id;
 
 	console.log('MOVE PLAYER UP', data);
 
@@ -59,7 +58,6 @@ function playerMoveUp(data) {
 }
 
 function playerMoveDown(data) {
-	data.playerId = this.id;
 
 	console.log('MOVE PLAYER DOWN', data);
 
