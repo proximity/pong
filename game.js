@@ -37,8 +37,6 @@ function hostStartGame(gameId) {
 function playerJoinGame(data) {
 	var room = gameSocket.manager.rooms['/' + data.gameId];
 
-	console.log('PLAYER JOINED', data);
-
 	if (undefined !== room) {
 		data.socketId = this.id;
 
@@ -53,14 +51,12 @@ function playerJoinGame(data) {
 function playerMoveUp(data) {
 
 	console.log('MOVE PLAYER UP', data);
-
 	io.sockets.in(data.gameId).emit('hostMovePlayerUp', data);
 }
 
 function playerMoveDown(data) {
 
 	console.log('MOVE PLAYER DOWN', data);
-
 	io.sockets.in(data.gameId).emit('hostMovePlayerDown', data);
 }
 

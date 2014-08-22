@@ -13407,13 +13407,30 @@ module.exports = Ball;
 
 },{"jquery":2}],6:[function(require,module,exports){
 var Backbone = require('backbone'),
-	$ = require('jquery'),
-	paddle = require('./paddle');
-	Player = require('./player');
-	Ball = require('./ball');
+	$ = require('jquery');
 
 var _game = {};
 
+
+var GameView = Backbone.View.extend({
+	el: 'body',
+	width: 400,
+	height: 600,
+	initialize: function(options) {
+	},
+
+
+});
+
+module.exports = GameView;
+
+},{"backbone":1,"jquery":2}],7:[function(require,module,exports){
+var Backbone = require('backbone'),
+	GameView = require('./game'),
+	paddle = require('./paddle');
+	Player = require('./player');
+	Ball = require('./ball');
+	$ = require('jquery');
 var animate = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
 	window.mozRequestAnimationFrame ||
@@ -13425,13 +13442,17 @@ var player1 = new Player(50, startHeight);
 var player2 = new Player($(window).width() - 50, startHeight);
 var ball = new Ball($(window).width()/2, $(window).height()/2);
 
-var GameView = Backbone.View.extend({
+var HostView = Backbone.View.extend({
 	el: 'body',
-	width: 400,
-	height: 600,
+
+	gameId: 0,
+
 	initialize: function(options) {
-		_game = this;
+		this.options = options;
 		this.socket = options.socket;
+
+		this.socket.emit('hostCreateGame');
+		this.socket.on('newGameCreated', $.proxy(this.gameCreated, this));
 
 		this.canvas = document.createElement('canvas');
 		this.width = $(window).width();
@@ -13447,26 +13468,29 @@ var GameView = Backbone.View.extend({
 		this.gameInit();
 	},
 
-	playerModeUp: function() {
+	gameCreated: function(data) {
+		$('<h1/>').html(data.gameId).appendTo(this.$el);
+	},
+
+	playerMoveUp: function() {
 		console.log('halo move up');
 		player1.moveUp();
 	},
 
-	playerModeDown: function() {
+	playerMoveDown: function() {
 		console.log('halo move down');
 		player1.moveDown();
 	},
 
 	gameInit: function() {
-		console.log(_game);
-		document.body.appendChild(_game.canvas);
-		animate(_game.step);
+		document.body.appendChild(this.canvas);
+		animate($.proxy(this.step, this));
 	},
 
 	step: function() {
-		_game.update();
-		_game.render();
-		animate(_game.step);
+		this.update();
+		this.render();
+		animate($.proxy(this.step, this));
 	},
 
 	update: function() {
@@ -13476,45 +13500,16 @@ var GameView = Backbone.View.extend({
 
 	render: function() {
 		context.fillStyle = '#000';
-		context.fillRect(0, 0, _game.width, _game.height);
+		context.fillRect(0, 0, this.width, this.height);
 		player1.render(context);
 		player2.render(context);
 		ball.render(context);
 	}
-
-});
-
-module.exports = GameView;
-
-},{"./ball":5,"./paddle":8,"./player":10,"backbone":1,"jquery":2}],7:[function(require,module,exports){
-var Backbone = require('backbone'),
-	GameView = require('./game'),
-	$ = require('jquery');
-
-var HostView = Backbone.View.extend({
-	el: 'body',
-
-	gameId: 0,
-
-	initialize: function(options) {
-		this.options = options;
-		this.socket = options.socket;
-
-		this.socket.emit('hostCreateGame');
-		this.socket.on('newGameCreated', $.proxy(this.gameCreated, this));
-	},
-
-	gameCreated: function(data) {
-		$('<h1/>').html(data.gameId).appendTo(this.$el);
-		this.game = new GameView(this.options);
-		console.log(data);
-	}
-
 });
 
 module.exports = HostView;
 
-},{"./game":6,"backbone":1,"jquery":2}],8:[function(require,module,exports){
+},{"./ball":5,"./game":6,"./paddle":8,"./player":10,"backbone":1,"jquery":2}],8:[function(require,module,exports){
 var $ = require('jquery');
 
 function Paddle(x, y, width, height) {
@@ -13676,7 +13671,7 @@ Player.prototype.moveDown = function() {
 	this.paddle.move(0, 4, -0.3);
 };
 Player.prototype.moveUp = function() {
-	this.paddle.move(0, 4, 0.3);
+	this.paddle.move(0, -4, 0.3);
 };
 
 

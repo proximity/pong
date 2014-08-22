@@ -37,7 +37,7 @@ Player.prototype.moveDown = function() {
 	this.paddle.move(0, 4, -0.3);
 };
 Player.prototype.moveUp = function() {
-	this.paddle.move(0, 4, 0.3);
+	this.paddle.move(0, -4, 0.3);
 };
 
 
