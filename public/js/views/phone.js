@@ -49,7 +49,6 @@ var PhoneView = Backbone.View.extend({
 		if ( typeof this.playerId != 'undefined' ) {
 			return;
 		}
-		console.log('This phone is player number', playerId);
 		this.playerId = playerId;
 	},
 

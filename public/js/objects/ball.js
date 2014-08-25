@@ -5,7 +5,7 @@ function Ball(x, y) {
 	this.y = y;
 	this.x_speed = 3;
 	this.y_speed = 0;
-	this.radius = 5;
+	this.radius = 7;
 }
 
 Ball.prototype.render = function(context) {

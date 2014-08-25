@@ -37,7 +37,6 @@ function hostStartGame(gameId) {
 
 function playerJoinGame(data) {
 	var room = gameSocket.manager.rooms['/' + data.gameId];
-	console.log(room);
 
 	if (undefined !== room) {
 		// if more than 2 players dont let them join
@@ -49,7 +48,6 @@ function playerJoinGame(data) {
 		var playerId = room.length;
 
 		this.join(data.gameId);
-		console.log('[PONG] emit to ' + this.id + ' the playerNumber is ' + playerId);
 
 		io.sockets.in(data.gameId).emit('playerNumber', playerId);
 		io.sockets.in(data.gameId).emit('playerJoined', data);

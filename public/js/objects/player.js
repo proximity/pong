@@ -2,7 +2,7 @@
 var Paddle = require('./paddle');
 
 function Player(x, y) {
-	this.paddle = new Paddle(x, y, 10, 100);
+	this.paddle = new Paddle(x, y, 10, ($(window).height()/6));
 }
 
 Player.prototype.render = function(context) {
@@ -41,9 +41,7 @@ Player.prototype.update = function(ball) {
 
 	if ( this.paddle.y < 0 ) {
 		this.paddle.y = 0;
-		console.log('detect1?');
 	} else if ( this.paddle.y + this.paddle.height > $(window).width() ) {
-		console.log('detect?');
 		this.paddle.y = $(window).width() - this.paddle.height;
 	}
 };

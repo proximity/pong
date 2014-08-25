@@ -42,7 +42,7 @@ var HostView = Backbone.View.extend({
 	},
 
 	gameCreated: function(data) {
-		$('<h1/>').html(data.gameId).appendTo(this.$el);
+		$('<h4/>').html('Visit ' + window.location.href + ' and enter in this code ' + data.gameId + ' to play').appendTo(this.$el);
 		this.gameInit();
 	},
 

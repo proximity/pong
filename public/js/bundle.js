@@ -13319,7 +13319,7 @@ function Ball(x, y) {
 	this.y = y;
 	this.x_speed = 3;
 	this.y_speed = 0;
-	this.radius = 5;
+	this.radius = 7;
 }
 
 Ball.prototype.render = function(context) {
@@ -13457,7 +13457,7 @@ module.exports = Paddle;
 var Paddle = require('./paddle');
 
 function Player(x, y) {
-	this.paddle = new Paddle(x, y, 10, 100);
+	this.paddle = new Paddle(x, y, 10, ($(window).height()/6));
 }
 
 Player.prototype.render = function(context) {
@@ -13496,9 +13496,7 @@ Player.prototype.update = function(ball) {
 
 	if ( this.paddle.y < 0 ) {
 		this.paddle.y = 0;
-		console.log('detect1?');
 	} else if ( this.paddle.y + this.paddle.height > $(window).width() ) {
-		console.log('detect?');
 		this.paddle.y = $(window).width() - this.paddle.height;
 	}
 };
@@ -13551,7 +13549,7 @@ var HostView = Backbone.View.extend({
 	},
 
 	gameCreated: function(data) {
-		$('<h1/>').html(data.gameId).appendTo(this.$el);
+		$('<h4/>').html('Visit ' + window.location.href + ' and enter in this code ' + data.gameId + ' to play').appendTo(this.$el);
 		this.gameInit();
 	},
 
@@ -13652,7 +13650,6 @@ var PhoneView = Backbone.View.extend({
 		if ( typeof this.playerId != 'undefined' ) {
 			return;
 		}
-		console.log('This phone is player number', playerId);
 		this.playerId = playerId;
 	},
 
