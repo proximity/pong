@@ -20,7 +20,8 @@ var PhoneView = Backbone.View.extend({
 
 	events: {
 		'touchstart #mobile-container-top': 'movePlayerUp',
-		'touchstart #mobile-container-bottom': 'movePlayerDown'
+		'touchstart #mobile-container-bottom': 'movePlayerDown',
+		'touchend': 'pausePlayer'
 	},
 
 	template: _.template($('#phone-view-template').html()),
@@ -43,28 +44,33 @@ var PhoneView = Backbone.View.extend({
 
 	render: function() {
 		this.$el.html(this.template());
-
 		return this;
 	},
 
-	movePlayerUp: function() {
+	pausePlayer: function() {
 		var data = {
 			gameId: this.gameId,
 			playerId: this.socketId
 		}
 
-		console.log(data);
+		this.socket.emit('playerPause', data);
+	},
+	movePlayerUp: function(e) {
+		e.preventDefault();
+		var data = {
+			gameId: this.gameId,
+			playerId: this.socketId
+		}
 
 		this.socket.emit('playerMoveUp', data);
 	},
 
-	movePlayerDown: function() {
+	movePlayerDown: function(e) {
+		e.preventDefault();
 		var data = {
 			gameId: this.gameId,
 			playerId: this.socketId
 		}
-
-		console.log(data);
 
 		this.socket.emit('playerMoveDown', data);
 	}

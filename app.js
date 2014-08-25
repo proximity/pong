@@ -12,6 +12,5 @@ var server = app.listen(argv.port);
 var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function(socket) {
-	console.log('client connected');
 	game.init(io, socket);
 });

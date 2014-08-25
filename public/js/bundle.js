@@ -13311,7 +13311,7 @@ $(function() {
 });
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./views/host":7,"./views/phone":9,"jquery":2}],5:[function(require,module,exports){
+},{"./views/host":8,"./views/phone":9,"jquery":2}],5:[function(require,module,exports){
 var $ = require('jquery');
 
 function Ball(x, y) {
@@ -13380,7 +13380,7 @@ Ball.prototype.update = function(paddle1, paddle2) {
 			if ( thisPaddle.y_speed !== 0 ) {
 				// paddles direction is up
 				var paddleDown = thisPaddle.y_speed > 0;
-				this.y_speed += thisPaddle.hit_speed;
+				this.y_speed += (thisPaddle.y_speed/2);
 			}
 
 			this.x_speed *= -1;
@@ -13406,115 +13406,6 @@ Ball.prototype.update = function(paddle1, paddle2) {
 module.exports = Ball;
 
 },{"jquery":2}],6:[function(require,module,exports){
-var Backbone = require('backbone'),
-	$ = require('jquery'),
-	paddle = require('./paddle');
-	Player = require('./player');
-	Ball = require('./ball');
-
-var _game = {};
-
-var animate = window.requestAnimationFrame ||
-	window.webkitRequestAnimationFrame ||
-	window.mozRequestAnimationFrame ||
-	function(callback) { window.setTimeout(callback, 1000/60); };
-
-var context;
-var startHeight = ($(window).height()/2) - 50;
-var player1 = new Player(50, startHeight);
-var player2 = new Player($(window).width() - 50, startHeight);
-var ball = new Ball($(window).width()/2, $(window).height()/2);
-
-var GameView = Backbone.View.extend({
-	el: 'body',
-	width: 400,
-	height: 600,
-	initialize: function(options) {
-		_game = this;
-		this.socket = options.socket;
-
-		this.canvas = document.createElement('canvas');
-		this.width = $(window).width();
-		this.height = $(window).height();
-
-		this.canvas.width = this.width;
-		this.canvas.height = this.height;
-		context = this.canvas.getContext('2d');
-
-		console.log('My socket',this.socket);
-		this.socket.on('hostMovePlayerUp', $.proxy(this.playerMoveUp, this));
-		this.socket.on('hostMovePlayerDown', $.proxy(this.playerMoveDown, this));
-		this.gameInit();
-	},
-
-	playerModeUp: function() {
-		console.log('halo move up');
-		player1.moveUp();
-	},
-
-	playerModeDown: function() {
-		console.log('halo move down');
-		player1.moveDown();
-	},
-
-	gameInit: function() {
-		console.log(_game);
-		document.body.appendChild(_game.canvas);
-		animate(_game.step);
-	},
-
-	step: function() {
-		_game.update();
-		_game.render();
-		animate(_game.step);
-	},
-
-	update: function() {
-		ball.update(player1.paddle, player2.paddle);
-		player1.update();
-	},
-
-	render: function() {
-		context.fillStyle = '#000';
-		context.fillRect(0, 0, _game.width, _game.height);
-		player1.render(context);
-		player2.render(context);
-		ball.render(context);
-	}
-
-});
-
-module.exports = GameView;
-
-},{"./ball":5,"./paddle":8,"./player":10,"backbone":1,"jquery":2}],7:[function(require,module,exports){
-var Backbone = require('backbone'),
-	GameView = require('./game'),
-	$ = require('jquery');
-
-var HostView = Backbone.View.extend({
-	el: 'body',
-
-	gameId: 0,
-
-	initialize: function(options) {
-		this.options = options;
-		this.socket = options.socket;
-
-		this.socket.emit('hostCreateGame');
-		this.socket.on('newGameCreated', $.proxy(this.gameCreated, this));
-	},
-
-	gameCreated: function(data) {
-		$('<h1/>').html(data.gameId).appendTo(this.$el);
-		this.game = new GameView(this.options);
-		console.log(data);
-	}
-
-});
-
-module.exports = HostView;
-
-},{"./game":6,"backbone":1,"jquery":2}],8:[function(require,module,exports){
 var $ = require('jquery');
 
 function Paddle(x, y, width, height) {
@@ -13561,7 +13452,146 @@ Paddle.prototype.stop = function() {
 
 module.exports = Paddle;
 
-},{"jquery":2}],9:[function(require,module,exports){
+},{"jquery":2}],7:[function(require,module,exports){
+
+var Paddle = require('./paddle');
+
+function Player(x, y) {
+	this.paddle = new Paddle(x, y, 10, 100);
+}
+
+Player.prototype.render = function(context) {
+	this.paddle.render(context);
+};
+
+Player.prototype.pause = function() {
+	clearInterval(this.movement);
+	this.paddle.move(0, 0, 0);
+};
+
+Player.prototype.moveDown = function() {
+	var that = this;
+	this.movement = setInterval(function(){
+		that.paddle.move(0, 4, -0.3);
+	}, 10);
+};
+
+Player.prototype.moveUp = function() {
+	var that = this;
+	this.movement = setInterval(function(){
+		that.paddle.move(0, -4, 0.3);
+	}, 10);
+};
+
+Player.prototype.update = function(ball) {
+	var y_pos = ball.y;
+	var diff = -((this.paddle.y + (this.paddle.height / 2)) - y_pos);
+	if ( diff < 0 && diff < -4 ) {
+		diff = -5;
+	} else if ( diff > 0 && diff > 4 ) {
+		diff = 5;
+	}
+
+	this.paddle.move(0, diff);
+
+	if ( this.paddle.y < 0 ) {
+		this.paddle.y = 0;
+		console.log('detect1?');
+	} else if ( this.paddle.y + this.paddle.height > $(window).width() ) {
+		console.log('detect?');
+		this.paddle.y = $(window).width() - this.paddle.height;
+	}
+};
+
+
+module.exports = Player;
+
+},{"./paddle":6}],8:[function(require,module,exports){
+var Backbone = require('backbone'),
+	paddle = require('../objects/paddle');
+	Player = require('../objects/player');
+	Ball = require('../objects/ball');
+	$ = require('jquery');
+
+var context;
+var animate = window.requestAnimationFrame ||
+	window.webkitRequestAnimationFrame ||
+	window.mozRequestAnimationFrame ||
+	function(callback) { window.setTimeout(callback, 1000/60); };
+var startHeight = ($(window).height()/2) - 50;
+
+var player1 = new Player(50, startHeight);
+var player2 = new Player($(window).width() - 50, startHeight);
+var ball = new Ball($(window).width()/2, $(window).height()/2);
+
+var HostView = Backbone.View.extend({
+	el: 'body',
+
+	initialize: function(options) {
+		this.options = options;
+		this.width = $(window).width();
+		this.height = $(window).height();
+
+		this.socket = options.socket;
+
+		this.socket.emit('hostCreateGame');
+		this.socket.on('newGameCreated', $.proxy(this.gameCreated, this));
+
+		this.canvas = document.createElement('canvas');
+		this.canvas.width = this.width;
+		this.canvas.height = this.height;
+		context = this.canvas.getContext('2d');
+
+		this.socket.on('hostMovePlayerUp', $.proxy(this.playerMoveUp, this));
+		this.socket.on('hostMovePlayerDown', $.proxy(this.playerMoveDown, this));
+		this.socket.on('hostPausePlayer', $.proxy(this.playerPause, this));
+	},
+
+	gameCreated: function(data) {
+		$('<h1/>').html(data.gameId).appendTo(this.$el);
+		this.gameInit();
+	},
+
+	playerMoveUp: function() {
+		player1.moveUp();
+	},
+
+	playerPause: function() {
+		player1.pause();
+	},
+
+	playerMoveDown: function() {
+		player1.moveDown();
+	},
+
+	gameInit: function() {
+		document.body.appendChild(this.canvas);
+		animate($.proxy(this.step, this));
+	},
+
+	step: function() {
+		this.update();
+		this.render();
+		animate($.proxy(this.step, this));
+	},
+
+	update: function() {
+		player2.update(ball);
+		ball.update(player1.paddle, player2.paddle);
+	},
+
+	render: function() {
+		context.fillStyle = '#000';
+		context.fillRect(0, 0, this.width, this.height);
+		player1.render(context);
+		player2.render(context);
+		ball.render(context);
+	}
+});
+
+module.exports = HostView;
+
+},{"../objects/ball":5,"../objects/paddle":6,"../objects/player":7,"backbone":1,"jquery":2}],9:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 
@@ -13584,7 +13614,8 @@ var PhoneView = Backbone.View.extend({
 
 	events: {
 		'touchstart #mobile-container-top': 'movePlayerUp',
-		'touchstart #mobile-container-bottom': 'movePlayerDown'
+		'touchstart #mobile-container-bottom': 'movePlayerDown',
+		'touchend': 'pausePlayer'
 	},
 
 	template: _.template($('#phone-view-template').html()),
@@ -13607,28 +13638,33 @@ var PhoneView = Backbone.View.extend({
 
 	render: function() {
 		this.$el.html(this.template());
-
 		return this;
 	},
 
-	movePlayerUp: function() {
+	pausePlayer: function() {
 		var data = {
 			gameId: this.gameId,
 			playerId: this.socketId
 		}
 
-		console.log(data);
+		this.socket.emit('playerPause', data);
+	},
+	movePlayerUp: function(e) {
+		e.preventDefault();
+		var data = {
+			gameId: this.gameId,
+			playerId: this.socketId
+		}
 
 		this.socket.emit('playerMoveUp', data);
 	},
 
-	movePlayerDown: function() {
+	movePlayerDown: function(e) {
+		e.preventDefault();
 		var data = {
 			gameId: this.gameId,
 			playerId: this.socketId
 		}
-
-		console.log(data);
 
 		this.socket.emit('playerMoveDown', data);
 	}
@@ -13636,50 +13672,4 @@ var PhoneView = Backbone.View.extend({
 
 module.exports = PhoneView;
 
-},{"backbone":1,"underscore":3}],10:[function(require,module,exports){
-
-var Paddle = require('./paddle');
-var keysDown = {};
-
-window.addEventListener("keydown", function(event) {
-	keysDown[event.keyCode] = true;
-});
-
-window.addEventListener("keyup", function(event) {
-	delete keysDown[event.keyCode];
-});
-
-function Player(x, y) {
-	this.paddle = new Paddle(x, y, 10, 100);
-}
-
-Player.prototype.render = function(context) {
-	this.paddle.render(context);
-};
-
-Player.prototype.update = function() {
-	for ( var key in keysDown ) {
-		var value = Number(key) ;
-
-		if ( value == 37 ) { //left arrow
-			this.paddle.move(0, -4, -0.3);
-			return true;
-		} else if ( value == 39 ) {
-			this.paddle.move(0, 4, 0.3);
-			return true;
-		}
-	}
-	this.paddle.move(0, 0, 0);
-};
-
-Player.prototype.moveDown = function() {
-	this.paddle.move(0, 4, -0.3);
-};
-Player.prototype.moveUp = function() {
-	this.paddle.move(0, 4, 0.3);
-};
-
-
-module.exports = Player;
-
-},{"./paddle":8}]},{},[4])
+},{"backbone":1,"underscore":3}]},{},[4])
