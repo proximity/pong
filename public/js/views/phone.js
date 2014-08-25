@@ -39,7 +39,18 @@ var PhoneView = Backbone.View.extend({
 
 		this.socket.emit('playerJoinGame', {gameId: gameId});
 
+
+		this.socket.on('playerNumber', $.proxy(this.playerNumber, this));
+
 		this.render();
+	},
+
+	playerNumber: function(playerId) {
+		if ( typeof this.playerId != 'undefined' ) {
+			return;
+		}
+		console.log('This phone is player number', playerId);
+		this.playerId = playerId;
 	},
 
 	render: function() {
@@ -50,7 +61,7 @@ var PhoneView = Backbone.View.extend({
 	pausePlayer: function() {
 		var data = {
 			gameId: this.gameId,
-			playerId: this.socketId
+			playerId: this.playerId
 		}
 
 		this.socket.emit('playerPause', data);
@@ -59,7 +70,7 @@ var PhoneView = Backbone.View.extend({
 		e.preventDefault();
 		var data = {
 			gameId: this.gameId,
-			playerId: this.socketId
+			playerId: this.playerId
 		}
 
 		this.socket.emit('playerMoveUp', data);
@@ -69,7 +80,7 @@ var PhoneView = Backbone.View.extend({
 		e.preventDefault();
 		var data = {
 			gameId: this.gameId,
-			playerId: this.socketId
+			playerId: this.playerId
 		}
 
 		this.socket.emit('playerMoveDown', data);
