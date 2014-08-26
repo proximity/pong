@@ -13319,7 +13319,7 @@ function Ball(x, y) {
 	this.y = y;
 	this.x_speed = 3;
 	this.y_speed = 0;
-	this.radius = 5;
+	this.radius = 7;
 }
 
 Ball.prototype.render = function(context) {
@@ -13457,7 +13457,7 @@ module.exports = Paddle;
 var Paddle = require('./paddle');
 
 function Player(x, y) {
-	this.paddle = new Paddle(x, y, 10, 100);
+	this.paddle = new Paddle(x, y, 10, ($(window).height()/6));
 }
 
 Player.prototype.render = function(context) {
@@ -13496,9 +13496,7 @@ Player.prototype.update = function(ball) {
 
 	if ( this.paddle.y < 0 ) {
 		this.paddle.y = 0;
-		console.log('detect1?');
 	} else if ( this.paddle.y + this.paddle.height > $(window).width() ) {
-		console.log('detect?');
 		this.paddle.y = $(window).width() - this.paddle.height;
 	}
 };
@@ -13519,13 +13517,15 @@ var animate = window.requestAnimationFrame ||
 	window.mozRequestAnimationFrame ||
 	function(callback) { window.setTimeout(callback, 1000/60); };
 var startHeight = ($(window).height()/2) - 50;
-
-var player1 = new Player(50, startHeight);
-var player2 = new Player($(window).width() - 50, startHeight);
+var players = [
+	new Player(50, startHeight),
+	new Player($(window).width() - 50, startHeight)
+	];
 var ball = new Ball($(window).width()/2, $(window).height()/2);
 
 var HostView = Backbone.View.extend({
 	el: 'body',
+	players: 0,
 
 	initialize: function(options) {
 		this.options = options;
@@ -13545,23 +13545,28 @@ var HostView = Backbone.View.extend({
 		this.socket.on('hostMovePlayerUp', $.proxy(this.playerMoveUp, this));
 		this.socket.on('hostMovePlayerDown', $.proxy(this.playerMoveDown, this));
 		this.socket.on('hostPausePlayer', $.proxy(this.playerPause, this));
+		this.socket.on('playerNumber', $.proxy(this.playerNumber, this));
 	},
 
 	gameCreated: function(data) {
-		$('<h1/>').html(data.gameId).appendTo(this.$el);
+		$('<h4/>').html('Visit ' + window.location.href + ' and enter in this code ' + data.gameId + ' to play').appendTo(this.$el);
 		this.gameInit();
 	},
 
-	playerMoveUp: function() {
-		player1.moveUp();
+	playerNumber: function(numPlayers) {
+		this.numPlayers = numPlayers;
 	},
 
-	playerPause: function() {
-		player1.pause();
+	playerMoveUp: function(data) {
+		players[data.playerId -1].moveUp();
 	},
 
-	playerMoveDown: function() {
-		player1.moveDown();
+	playerPause: function(data) {
+		players[data.playerId -1].pause();
+	},
+
+	playerMoveDown: function(data) {
+		players[data.playerId -1].moveDown();
 	},
 
 	gameInit: function() {
@@ -13576,15 +13581,17 @@ var HostView = Backbone.View.extend({
 	},
 
 	update: function() {
-		player2.update(ball);
-		ball.update(player1.paddle, player2.paddle);
+		if ( this.numPlayers < 2 ) {
+			players[1].update(ball);
+		}
+		ball.update(players[0].paddle, players[1].paddle);
 	},
 
 	render: function() {
 		context.fillStyle = '#000';
 		context.fillRect(0, 0, this.width, this.height);
-		player1.render(context);
-		player2.render(context);
+		players[0].render(context);
+		players[1].render(context);
 		ball.render(context);
 	}
 });
@@ -13633,7 +13640,17 @@ var PhoneView = Backbone.View.extend({
 
 		this.socket.emit('playerJoinGame', {gameId: gameId});
 
+
+		this.socket.on('playerNumber', $.proxy(this.playerNumber, this));
+
 		this.render();
+	},
+
+	playerNumber: function(playerId) {
+		if ( typeof this.playerId != 'undefined' ) {
+			return;
+		}
+		this.playerId = playerId;
 	},
 
 	render: function() {
@@ -13644,7 +13661,7 @@ var PhoneView = Backbone.View.extend({
 	pausePlayer: function() {
 		var data = {
 			gameId: this.gameId,
-			playerId: this.socketId
+			playerId: this.playerId
 		}
 
 		this.socket.emit('playerPause', data);
@@ -13653,7 +13670,7 @@ var PhoneView = Backbone.View.extend({
 		e.preventDefault();
 		var data = {
 			gameId: this.gameId,
-			playerId: this.socketId
+			playerId: this.playerId
 		}
 
 		this.socket.emit('playerMoveUp', data);
@@ -13663,7 +13680,7 @@ var PhoneView = Backbone.View.extend({
 		e.preventDefault();
 		var data = {
 			gameId: this.gameId,
-			playerId: this.socketId
+			playerId: this.playerId
 		}
 
 		this.socket.emit('playerMoveDown', data);

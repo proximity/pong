@@ -39,9 +39,17 @@ function playerJoinGame(data) {
 	var room = gameSocket.manager.rooms['/' + data.gameId];
 
 	if (undefined !== room) {
+		// if more than 2 players dont let them join
+		if ( room.length > 2 ) {
+			this.emit('error', {message: 'This room is full'});
+			return;
+		}
 		data.socketId = this.id;
+		var playerId = room.length;
 
 		this.join(data.gameId);
+
+		io.sockets.in(data.gameId).emit('playerNumber', playerId);
 		io.sockets.in(data.gameId).emit('playerJoined', data);
 	} else {
 		this.emit('error', {message: 'This room does not exist'});
