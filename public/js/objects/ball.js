@@ -1,6 +1,7 @@
 var $ = require('jquery');
 
 function Ball(x, y) {
+	this.scored = 0;
 	this.x = x;
 	this.y = y;
 	this.x_speed = 3;
@@ -17,6 +18,7 @@ Ball.prototype.render = function(context) {
 };
 
 Ball.prototype.update = function(paddle1, paddle2) {
+	this.scored = 0;
 	this.x += this.x_speed;
 	this.y += this.y_speed;
 	var top_x = this.x - 5;
@@ -99,9 +101,9 @@ Ball.prototype.update = function(paddle1, paddle2) {
 			this.direction = true;
 
 			if ( checkScore1 ) {
-				console.log('Player 2 scores');
+				this.scored = 2;
 			} else {
-				console.log('Player 1 scores');
+				this.scored = 1;
 			}
 
 		}
