@@ -18,7 +18,9 @@ var ball = new Ball($(window).width()/2, $(window).height()/2);
 
 var HostView = Backbone.View.extend({
 	el: 'body',
+	gameId: 0,
 	players: 0,
+	computer: 1,
 
 	initialize: function(options) {
 		this.options = options;
@@ -42,9 +44,18 @@ var HostView = Backbone.View.extend({
 	},
 
 	gameCreated: function(data) {
+		this.gameId = data.gameId;
 		$('<h4/>').html('Visit ' + window.location.href + ' and enter in this code ' + data.gameId + ' to play').appendTo(this.$el);
+		$('<h2 class="player1 score"/>').html('0').appendTo(this.$el);
+		$('<h2 class="player2 score"/>').html('0').appendTo(this.$el);
 		this.gameInit();
 	},
+
+	resetScore: function() {
+		$('.player1').html('0');
+		$('.player2').html('0');
+	},
+
 
 	playerNumber: function(numPlayers) {
 		this.numPlayers = numPlayers;
@@ -67,7 +78,33 @@ var HostView = Backbone.View.extend({
 		animate($.proxy(this.step, this));
 	},
 
+	updateScore: function() {
+		var scoreCard = $('.player' + ball.scored);
+		var currentScore = parseInt(scoreCard.html()) + 1;
+		var data = {
+			gameId: this.gameId
+		};
+
+		if ( currentScore >= 3 && this.numPlayers >= 2 ) {
+			this.numPlayers = 1;
+			this.computer = 0;
+			this.resetScore();
+			console.log(ball.scored);
+			if ( ball.scored == 1 ) {
+				this.computer = 1;
+			}
+			data.playerToLeave = (this.computer + 1);
+			console.log(this.socket);
+			this.socket.emit('playerRestart', data);
+		} else {
+			scoreCard.html(currentScore);
+		}
+	},
+
 	step: function() {
+		if ( ball.scored ) {
+			this.updateScore();
+		}
 		this.update();
 		this.render();
 		animate($.proxy(this.step, this));
@@ -75,7 +112,7 @@ var HostView = Backbone.View.extend({
 
 	update: function() {
 		if ( this.numPlayers < 2 ) {
-			players[1].update(ball);
+			players[this.computer].update(ball);
 		}
 		ball.update(players[0].paddle, players[1].paddle);
 	},

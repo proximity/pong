@@ -68,5 +68,13 @@ function playerMoveDown(data) {
 }
 
 function playerRestart(data) {
+	console.log("[before]");
+	console.log(data);
+	console.log(gameSocket.manager.rooms);
+	console.log(gameSocket.manager.rooms['/' + data.gameId][data.playerToLeave]);
+	gameSocket.manager.rooms['/' + data.gameId].splice(gameSocket.manager.rooms['/' + data.gameId].indexOf(data.playerToLeave),1);
+
+	console.log("[after]");
+	console.log(gameSocket.manager.rooms);
 
 }
