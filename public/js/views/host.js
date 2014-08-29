@@ -95,7 +95,6 @@ var HostView = Backbone.View.extend({
 				this.computer = 1;
 			}
 			data.playerToLeave = (this.computer + 1);
-			console.log(this.socket);
 			this.socket.emit('playerRestart', data);
 		} else {
 			scoreCard.html(currentScore);
