@@ -75,10 +75,12 @@ var HostView = Backbone.View.extend({
 	},
 
 	update: function() {
-		if ( this.numPlayers < 2 ) {
-			players[1].update(ball);
+		if ( this.numPlayers >= 1 ) {
+			if ( this.numPlayers < 2 ) {
+				players[1].update(ball);
+			}
+			ball.update(players[0].paddle, players[1].paddle);
 		}
-		ball.update(players[0].paddle, players[1].paddle);
 	},
 
 	render: function() {
