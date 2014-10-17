@@ -1,7 +1,6 @@
 body {
 	margin: 0 auto;
 	font-family: Arial, Helvetica, sans-serif;
-	background: #000;
 
 	h1 {
 		position: absolute;
@@ -35,11 +34,11 @@ body {
 		}
 
 		#mobile-container-top {
-			width: 100%;
+			width: 95%;
 			height:50%;
 			position: absolute;
 			top: 0;
-			background: #000000;
+			background: url('../../assets/bg.png') repeat;
 			border-top: 10px solid #fff;
 			border-left: 10px solid #fff;
 			border-right: 10px solid #fff;
@@ -51,11 +50,11 @@ body {
 		}
 
 		#mobile-container-bottom {
-			width: 100%;
+			width: 95%;
 			height:50%;
 			position: absolute;
 			bottom: 0;
-			background: #000000;
+			background: url('../../assets/bg.png') repeat;
 			border-top: 5px solid #fff;
 			border-bottom: 10px solid #fff;
 			border-left: 10px solid #fff;
