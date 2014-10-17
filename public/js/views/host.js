@@ -42,7 +42,8 @@ var HostView = Backbone.View.extend({
 	},
 
 	gameCreated: function(data) {
-		$('<h4/>').html('Visit ' + window.location.href + ' and enter in this code ' + data.gameId + ' to play').appendTo(this.$el);
+		console.log('gameCreated');
+		$('<h4/>').html('Visit ' + window.location.href + ' on your mobile and enter this code to play: ' + data.gameId + '').appendTo(this.$el);
 		this.gameInit();
 	},
 
@@ -81,7 +82,7 @@ var HostView = Backbone.View.extend({
 	},
 
 	render: function() {
-		context.fillStyle = '#000';
+		context.fillStyle = 'rgba(0, 0, 0, 1)';
 		context.fillRect(0, 0, this.width, this.height);
 		players[0].render(context);
 		players[1].render(context);

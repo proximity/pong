@@ -1,8 +1,8 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 
-; require("/Users/djennings/Sites/pong/public/bower_components/jquery/dist/jquery.js");
-require("/Users/djennings/Sites/pong/public/bower_components/underscore/underscore.js");
+; require("/Users/Psyrok/Desktop/pong/pong/public/bower_components/jquery/dist/jquery.js");
+require("/Users/Psyrok/Desktop/pong/pong/public/bower_components/underscore/underscore.js");
 ;__browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 //     Backbone.js 1.1.2
 
@@ -1618,7 +1618,7 @@ require("/Users/djennings/Sites/pong/public/bower_components/underscore/undersco
 }).call(global, undefined, undefined, undefined, undefined, function defineExport(ex) { module.exports = ex; });
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"/Users/djennings/Sites/pong/public/bower_components/jquery/dist/jquery.js":2,"/Users/djennings/Sites/pong/public/bower_components/underscore/underscore.js":3}],2:[function(require,module,exports){
+},{"/Users/Psyrok/Desktop/pong/pong/public/bower_components/jquery/dist/jquery.js":2,"/Users/Psyrok/Desktop/pong/pong/public/bower_components/underscore/underscore.js":3}],2:[function(require,module,exports){
 (function (global){
 ;__browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 /*!
@@ -13570,7 +13570,8 @@ var HostView = Backbone.View.extend({
 	},
 
 	gameCreated: function(data) {
-		$('<h4/>').html('Visit ' + window.location.href + ' and enter in this code ' + data.gameId + ' to play').appendTo(this.$el);
+		console.log('gameCreated');
+		$('<h4/>').html('Visit ' + window.location.href + ' on your mobile and enter this code to play: ' + data.gameId + '').appendTo(this.$el);
 		this.gameInit();
 	},
 
@@ -13609,7 +13610,7 @@ var HostView = Backbone.View.extend({
 	},
 
 	render: function() {
-		context.fillStyle = '#000';
+		context.fillStyle = 'rgba(0, 0, 0, 1)';
 		context.fillRect(0, 0, this.width, this.height);
 		players[0].render(context);
 		players[1].render(context);
