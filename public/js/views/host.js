@@ -86,8 +86,6 @@ var HostView = Backbone.View.extend({
 	render: function() {
 		var backgroundImage = new Image(); 
 		backgroundImage.src = '../../assets/bg.png'; 
-		/*context.drawImage(backgroundImage, 0, 0, this.width, this.height);*/
-
 		var ptrn = context.createPattern(backgroundImage, 'repeat');
 		context.fillStyle = ptrn;
 		context.fillRect(0, 0, this.width, this.height);
