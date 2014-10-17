@@ -1,8 +1,8 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 
-; require("/Users/jghazally/Documents/Node/pong/public/bower_components/jquery/dist/jquery.js");
-require("/Users/jghazally/Documents/Node/pong/public/bower_components/underscore/underscore.js");
+; require("/Users/djennings/Sites/pong/public/bower_components/jquery/dist/jquery.js");
+require("/Users/djennings/Sites/pong/public/bower_components/underscore/underscore.js");
 ;__browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 //     Backbone.js 1.1.2
 
@@ -1618,7 +1618,7 @@ require("/Users/jghazally/Documents/Node/pong/public/bower_components/underscore
 }).call(global, undefined, undefined, undefined, undefined, function defineExport(ex) { module.exports = ex; });
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"/Users/jghazally/Documents/Node/pong/public/bower_components/jquery/dist/jquery.js":2,"/Users/jghazally/Documents/Node/pong/public/bower_components/underscore/underscore.js":3}],2:[function(require,module,exports){
+},{"/Users/djennings/Sites/pong/public/bower_components/jquery/dist/jquery.js":2,"/Users/djennings/Sites/pong/public/bower_components/underscore/underscore.js":3}],2:[function(require,module,exports){
 (function (global){
 ;__browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 /*!
@@ -13377,10 +13377,31 @@ Ball.prototype.update = function(paddle1, paddle2) {
 				!checkBehindPaddle1 &&
 				!checkBehindPaddle2
 			) {
-			if ( thisPaddle.y_speed !== 0 ) {
-				// paddles direction is up
-				var paddleDown = thisPaddle.y_speed > 0;
-				this.y_speed += (thisPaddle.y_speed/2);
+			if ( !isNaN(thisPaddle.hit_speed) && thisPaddle.hit_speed !== 0 ) {
+				var
+					defaultSpeed = 3,
+					paddleUp = thisPaddle.y_speed < 0,
+					paddleDown = !paddleUp,
+					speed = (thisPaddle.hit_speed / 4) * -1;
+
+				// Don't increase or decrease the speed by more than a certain amount
+				if (speed > defaultSpeed) {
+					speed = defaultSpeed;
+				} else if (speed < -defaultSpeed) {
+					speed = -defaultSpeed;
+				}
+
+				// Make sure the ball doesn't go below a speed of 3 or above -3
+				if (paddleUp && (this.x_speed + speed) > -defaultSpeed) {
+					this.x_speed = -defaultSpeed;
+				} else if (paddleDown && (this.x_speed + speed) < defaultSpeed) {
+					this.x_speed = defaultSpeed;
+				} else {
+					this.x_speed += speed / 2;
+				}
+
+				// Set Y speed
+				this.y_speed += speed;
 			}
 
 			this.x_speed *= -1;

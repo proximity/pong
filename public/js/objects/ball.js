@@ -63,10 +63,31 @@ Ball.prototype.update = function(paddle1, paddle2) {
 				!checkBehindPaddle1 &&
 				!checkBehindPaddle2
 			) {
-			if ( thisPaddle.y_speed !== 0 ) {
-				// paddles direction is up
-				var paddleDown = thisPaddle.y_speed > 0;
-				this.y_speed += (thisPaddle.y_speed/2);
+			if ( !isNaN(thisPaddle.hit_speed) && thisPaddle.hit_speed !== 0 ) {
+				var
+					defaultSpeed = 3,
+					paddleUp = thisPaddle.y_speed < 0,
+					paddleDown = !paddleUp,
+					speed = (thisPaddle.hit_speed / 4) * -1;
+
+				// Don't increase or decrease the speed by more than a certain amount
+				if (speed > defaultSpeed) {
+					speed = defaultSpeed;
+				} else if (speed < -defaultSpeed) {
+					speed = -defaultSpeed;
+				}
+
+				// Make sure the ball doesn't go below a speed of 3 or above -3
+				if (paddleUp && (this.x_speed + speed) > -defaultSpeed) {
+					this.x_speed = -defaultSpeed;
+				} else if (paddleDown && (this.x_speed + speed) < defaultSpeed) {
+					this.x_speed = defaultSpeed;
+				} else {
+					this.x_speed += speed / 2;
+				}
+
+				// Set Y speed
+				this.y_speed += speed;
 			}
 
 			this.x_speed *= -1;
