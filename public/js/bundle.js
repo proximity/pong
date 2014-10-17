@@ -13337,8 +13337,8 @@ Ball.prototype.update = function(paddle1, paddle2) {
 	var bottom_x = this.x + 5;
 	var bottom_y = this.y + 5;
 
-	var checkPaddle1 = this.x - 65 < 0;
-	var checkPaddle2 = this.x + 55 > $(window).width();
+	var checkPaddle1 = this.x - 70 < 0;
+	var checkPaddle2 = this.x + 60 > $(window).width();
 	var checkBehindPaddle1 = this.x - 60 < 0;
 	var checkBehindPaddle2 = this.x + 50 > $(window).width();
 	var checkScore1 = this.x < 0;
@@ -13397,7 +13397,7 @@ Ball.prototype.update = function(paddle1, paddle2) {
 				} else if (paddleDown && (this.x_speed + speed) < defaultSpeed) {
 					this.x_speed = defaultSpeed;
 				} else {
-					this.x_speed += speed / 2;
+					this.x_speed += speed;
 				}
 
 				// Set Y speed
@@ -13570,7 +13570,8 @@ var HostView = Backbone.View.extend({
 	},
 
 	gameCreated: function(data) {
-		$('<h4/>').html('Visit ' + window.location.href + ' and enter in this code ' + data.gameId + ' to play').appendTo(this.$el);
+		var html = 'Visit ' + window.location.href + ' and enter in the code &quot;' + data.gameId + '&quot; to play';
+		$('<h4/>').html(html).appendTo(this.$el);
 		this.gameInit();
 	},
 
@@ -13602,10 +13603,12 @@ var HostView = Backbone.View.extend({
 	},
 
 	update: function() {
-		if ( this.numPlayers < 2 ) {
-			players[1].update(ball);
+		if ( this.numPlayers >= 1 ) {
+			if ( this.numPlayers < 2 ) {
+				players[1].update(ball);
+			}
+			ball.update(players[0].paddle, players[1].paddle);
 		}
-		ball.update(players[0].paddle, players[1].paddle);
 	},
 
 	render: function() {
