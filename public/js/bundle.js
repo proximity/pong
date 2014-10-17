@@ -13320,6 +13320,7 @@ function Ball(x, y) {
 	this.x_speed = 3;
 	this.y_speed = 0;
 	this.radius = 7;
+	this.direction = true; // true = right, false = left
 }
 
 Ball.prototype.render = function(context) {
@@ -13352,14 +13353,11 @@ Ball.prototype.update = function(paddle1, paddle2) {
 	// ball hits right paddle
 	// ball hits top
 	// ball hits floor
-	if ( this.y - 5 < 0 ) {
-		// player 2 scores
+
+	if ( this.y - 5 < 0 ) { // ball hits ceiling
 		this.y = 5;
 		this.y_speed = - this.y_speed;
-
-
-	} else if ( this.y > $(window).height() ) {
-		// player 2 hits
+	} else if ( this.y > $(window).height() ) { // ball hits floor
 		this.y = $(window).height() - 5;
 		this.y_speed = - this.y_speed;
 	}
@@ -13375,43 +13373,44 @@ Ball.prototype.update = function(paddle1, paddle2) {
 				checkPaddleTop < bottom_y &&
 				checkPaddleBottom > top_y &&
 				!checkBehindPaddle1 &&
-				!checkBehindPaddle2
+				!checkBehindPaddle2 &&
+				((!this.direction && checkPaddle1) || (this.direction && checkPaddle2))
 			) {
 			if ( !isNaN(thisPaddle.hit_speed) && thisPaddle.hit_speed !== 0 ) {
 				var
 					defaultSpeed = 3,
 					paddleUp = thisPaddle.y_speed < 0,
 					paddleDown = !paddleUp,
-					speed = (thisPaddle.hit_speed / 4) * -1;
+					ballUp = this.y_speed < 0,
+					ballDown = this.y_speed > 0,
+					speed = (thisPaddle.hit_speed / 4),
+					speedAbs = Math.abs(speed);
 
-				// Don't increase or decrease the speed by more than a certain amount
+				// Don't increase or decrease the speed by more than defaultSpeed (3)
 				if (speed > defaultSpeed) {
 					speed = defaultSpeed;
 				} else if (speed < -defaultSpeed) {
 					speed = -defaultSpeed;
 				}
 
-				// Make sure the ball doesn't go below a speed of 3 or above -3
-				if (paddleUp && (this.x_speed + speed) > -defaultSpeed) {
-					this.x_speed = -defaultSpeed;
-				} else if (paddleDown && (this.x_speed + speed) < defaultSpeed) {
-					this.x_speed = defaultSpeed;
+				if ((ballUp && paddleUp) || (ballDown && paddleDown) || (!ballUp && !ballDown)) {
+					this.x_speed += this.direction ? speedAbs : -speedAbs;
 				} else {
-					this.x_speed += speed;
+					this.x_speed += this.direction ? -speedAbs : speedAbs;
 				}
 
-				// Set Y speed
-				this.y_speed += speed;
+				this.y_speed -= speed;
 			}
 
 			this.x_speed *= -1;
-		}
-		if ( checkScore1 || checkScore2 ) {
+			this.direction = !this.direction;
+		} else if ( checkScore1 || checkScore2 ) {
 			// A score has been made
 			this.x_speed = 3;
 			this.y_speed = 0;
 			this.x = $(window).width()/2;
 			this.y =$(window).height()/2;
+			this.direction = true;
 
 			if ( checkScore1 ) {
 				console.log('Player 2 scores');
