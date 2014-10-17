@@ -13,6 +13,11 @@ $(function() {
 
 		if (Modernizr.touch) {
 			var phone = new PhoneView(options);
+
+			this.on('playerRestart', function(e) {
+				console.log(e);
+			});
+
 		} else {
 			var host = new HostView(options);
 		}

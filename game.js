@@ -68,5 +68,6 @@ function playerMoveDown(data) {
 }
 
 function playerRestart(data) {
+	io.sockets.in(data.gameId).emit('playerRestart', data);
 	gameSocket.manager.rooms['/' + data.gameId].splice(gameSocket.manager.rooms['/' + data.gameId].indexOf(data.playerToLeave),1);
 }

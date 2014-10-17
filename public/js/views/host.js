@@ -23,7 +23,7 @@ var HostView = Backbone.View.extend({
 	computer: 1,
 
 	initialize: function(options) {
-		/*var backgroundImage = new Image(); 
+		/*var backgroundImage = new Image();
 		backgroundImage.src = '../../assets/bg2.png'; */
 		this.options = options;
 		this.width = $(window).width();
@@ -92,7 +92,6 @@ var HostView = Backbone.View.extend({
 			this.numPlayers = 1;
 			this.computer = 0;
 			this.resetScore();
-			console.log(ball.scored);
 			if ( ball.scored == 1 ) {
 				this.computer = 1;
 			}
@@ -122,8 +121,8 @@ var HostView = Backbone.View.extend({
 	},
 
 	render: function() {
-		var backgroundImage = new Image(); 
-		backgroundImage.src = '../../assets/bg.png'; 
+		var backgroundImage = new Image();
+		backgroundImage.src = '../../assets/bg.png';
 		var ptrn = context.createPattern(backgroundImage, 'repeat');
 		context.fillStyle = ptrn;
 		context.fillRect(0, 0, this.width, this.height);
