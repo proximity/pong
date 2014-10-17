@@ -21,7 +21,7 @@ exports.init = function(sio, socket) {
 };
 
 function hostCreateGame() {
-	var gameId = (Math.random() * 10000) | 0;
+	var gameId = ((Math.random() * 9000) + 1000) | 0;
 
 	this.join(gameId);
 	this.emit('newGameCreated', {gameId: gameId, socketId: this.id});
@@ -45,11 +45,11 @@ function playerJoinGame(data) {
 			return;
 		}
 		data.socketId = this.id;
-		var playerId = room.length;
+		var numPlayers = room.length;
 
 		this.join(data.gameId);
 
-		io.sockets.in(data.gameId).emit('playerNumber', playerId);
+		io.sockets.in(data.gameId).emit('playerNumber', numPlayers);
 		io.sockets.in(data.gameId).emit('playerJoined', data);
 	} else {
 		this.emit('error', {message: 'This room does not exist'});

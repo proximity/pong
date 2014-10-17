@@ -23,8 +23,8 @@ Ball.prototype.update = function(paddle1, paddle2) {
 	var bottom_x = this.x + 5;
 	var bottom_y = this.y + 5;
 
-	var checkPaddle1 = this.x - 65 < 0;
-	var checkPaddle2 = this.x + 55 > $(window).width();
+	var checkPaddle1 = this.x - 70 < 0;
+	var checkPaddle2 = this.x + 60 > $(window).width();
 	var checkBehindPaddle1 = this.x - 60 < 0;
 	var checkBehindPaddle2 = this.x + 50 > $(window).width();
 	var checkScore1 = this.x < 0;
@@ -83,7 +83,7 @@ Ball.prototype.update = function(paddle1, paddle2) {
 				} else if (paddleDown && (this.x_speed + speed) < defaultSpeed) {
 					this.x_speed = defaultSpeed;
 				} else {
-					this.x_speed += speed / 2;
+					this.x_speed += speed;
 				}
 
 				// Set Y speed

@@ -42,7 +42,8 @@ var HostView = Backbone.View.extend({
 	},
 
 	gameCreated: function(data) {
-		$('<h4/>').html('Visit ' + window.location.href + ' and enter in this code ' + data.gameId + ' to play').appendTo(this.$el);
+		var html = 'Visit ' + window.location.href + ' and enter in the code &quot;' + data.gameId + '&quot; to play';
+		$('<h4/>').html(html).appendTo(this.$el);
 		this.gameInit();
 	},
 
@@ -74,10 +75,12 @@ var HostView = Backbone.View.extend({
 	},
 
 	update: function() {
-		if ( this.numPlayers < 2 ) {
-			players[1].update(ball);
+		if ( this.numPlayers >= 1 ) {
+			if ( this.numPlayers < 2 ) {
+				players[1].update(ball);
+			}
+			ball.update(players[0].paddle, players[1].paddle);
 		}
-		ball.update(players[0].paddle, players[1].paddle);
 	},
 
 	render: function() {
