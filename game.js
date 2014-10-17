@@ -45,11 +45,11 @@ function playerJoinGame(data) {
 			return;
 		}
 		data.socketId = this.id;
-		var playerId = room.length;
+		var numPlayers = room.length;
 
 		this.join(data.gameId);
 
-		io.sockets.in(data.gameId).emit('playerNumber', playerId);
+		io.sockets.in(data.gameId).emit('playerNumber', numPlayers);
 		io.sockets.in(data.gameId).emit('playerJoined', data);
 	} else {
 		this.emit('error', {message: 'This room does not exist'});
