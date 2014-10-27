@@ -42,6 +42,8 @@ var PhoneView = Backbone.View.extend({
 
 		this.socket.on('playerNumber', $.proxy(this.playerNumber, this));
 
+		this.socket.on('playerRestart', $.proxy(this.playerRestart, this));
+
 		this.render();
 	},
 
@@ -50,6 +52,13 @@ var PhoneView = Backbone.View.extend({
 			return;
 		}
 		this.playerId = playerId;
+	},
+
+	playerRestart: function(playerData) {
+		if ( this.playerId == playerData.playerToLeave ) {
+			console.log('This guy has to reload');
+			window.location.reload();
+		}
 	},
 
 	render: function() {
@@ -62,9 +71,9 @@ var PhoneView = Backbone.View.extend({
 			gameId: this.gameId,
 			playerId: this.playerId
 		}
-
 		this.socket.emit('playerPause', data);
 	},
+
 	movePlayerUp: function(e) {
 		e.preventDefault();
 		var data = {
