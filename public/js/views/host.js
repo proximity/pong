@@ -20,7 +20,10 @@ var HostView = Backbone.View.extend({
 	el: 'body',
 	gameId: 0,
 	players: 0,
-	computer: 1,
+	againstComputer: 1,
+	// if you play a 2 player game, the computer could potentially be in
+	// the player 1 position
+	computerPosition: 1,
 
 	initialize: function(options) {
 		/*var backgroundImage = new Image();
@@ -59,7 +62,6 @@ var HostView = Backbone.View.extend({
 		$('.player2').html('0');
 	},
 
-
 	playerNumber: function(numPlayers) {
 		this.numPlayers = numPlayers;
 	},
@@ -90,12 +92,12 @@ var HostView = Backbone.View.extend({
 
 		if ( currentScore >= 3 && this.numPlayers >= 2 ) {
 			this.numPlayers = 1;
-			this.computer = 0;
+			this.againstComputer = 0;
 			this.resetScore();
 			if ( ball.scored == 1 ) {
-				this.computer = 1;
+				this.againstComputer = 1;
 			}
-			data.playerToLeave = (this.computer + 1);
+			this.computerPosition = data.playerToLeave = (this.againstComputer + 1);
 			this.socket.emit('playerRestart', data);
 		} else {
 			scoreCard.html(currentScore);
@@ -114,7 +116,8 @@ var HostView = Backbone.View.extend({
 	update: function() {
 		if ( this.numPlayers >= 1 ) {
 			if ( this.numPlayers < 2 ) {
-				players[1].update(ball);
+				console.log(this, players);
+				players[this.computerPosition].update(ball);
 			}
 			ball.update(players[0].paddle, players[1].paddle);
 		}

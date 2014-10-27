@@ -105,10 +105,8 @@ Ball.prototype.update = function(paddle1, paddle2) {
 			} else {
 				this.scored = 1;
 			}
-
 		}
 	}
-
 };
 
 module.exports = Ball;
