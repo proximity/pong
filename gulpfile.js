@@ -2,7 +2,7 @@ var gulp = require('gulp'),
 	gutil = require('gulp-util'),
 	watch = require('gulp-watch'),
 	plumber = require('gulp-plumber'),
-	sass = require('gulp-ruby-sass'),
+	compass = require('gulp-compass'),
 	size = require('gulp-filesize'),
 	autoprefixer = require('gulp-autoprefixer'),
 	minifycss = require('gulp-minify-css'),
@@ -15,7 +15,11 @@ var gulp = require('gulp'),
 gulp.task('css', function() {
 	return gulp.src('./public/scss/**/*.scss')
 		.pipe(plumber())
-		.pipe(sass({compass: true}))
+		.pipe(compass({
+			config_file: './config.rb',
+			css: 'public/css',
+			sass: 'public/scss'
+		}))
 		.pipe(autoprefixer())
 		.pipe(minifycss({keepSpecialComments: 0}))
 		.pipe(size())
