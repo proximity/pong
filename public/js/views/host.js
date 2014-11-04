@@ -1,9 +1,8 @@
-var Backbone = require('backbone'),
-	paddle = require('../objects/paddle');
-	Player = require('../objects/player');
-	Ball = require('../objects/ball');
-	$ = require('jquery');
-
+var Backbone = require('backbone');
+var paddle = require('../objects/paddle');
+var Player = require('../objects/player');
+var Ball = require('../objects/ball');
+var $ = require('jquery');
 var context;
 var animate = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
@@ -26,8 +25,6 @@ var HostView = Backbone.View.extend({
 	computerPosition: 1,
 
 	initialize: function(options) {
-		/*var backgroundImage = new Image();
-		backgroundImage.src = '../../assets/bg2.png'; */
 		this.options = options;
 		this.width = $(window).width();
 		this.height = $(window).height();
@@ -116,8 +113,7 @@ var HostView = Backbone.View.extend({
 	update: function() {
 		if ( this.numPlayers >= 1 ) {
 			if ( this.numPlayers < 2 ) {
-				console.log(this, players);
-				players[this.computerPosition].update(ball);
+				players[this.computerPosition -1].update(ball);
 			}
 			ball.update(players[0].paddle, players[1].paddle);
 		}

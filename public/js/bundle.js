@@ -13354,12 +13354,6 @@ Ball.prototype.update = function(paddle1, paddle2) {
 
 	var checkPaddleTop;
 	var checkPaddleBottom;
-	// ball hits left wall
-	// ball hits left paddle
-	// ball hits right wall
-	// ball hits right paddle
-	// ball hits top
-	// ball hits floor
 
 	if ( this.y - 5 < 0 ) { // ball hits ceiling
 		this.y = 5;
@@ -13530,12 +13524,11 @@ Player.prototype.update = function(ball) {
 module.exports = Player;
 
 },{"./paddle":6}],8:[function(require,module,exports){
-var Backbone = require('backbone'),
-	paddle = require('../objects/paddle');
-	Player = require('../objects/player');
-	Ball = require('../objects/ball');
-	$ = require('jquery');
-
+var Backbone = require('backbone');
+var paddle = require('../objects/paddle');
+var Player = require('../objects/player');
+var Ball = require('../objects/ball');
+var $ = require('jquery');
 var context;
 var animate = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
@@ -13558,8 +13551,6 @@ var HostView = Backbone.View.extend({
 	computerPosition: 1,
 
 	initialize: function(options) {
-		/*var backgroundImage = new Image();
-		backgroundImage.src = '../../assets/bg2.png'; */
 		this.options = options;
 		this.width = $(window).width();
 		this.height = $(window).height();
@@ -13648,8 +13639,7 @@ var HostView = Backbone.View.extend({
 	update: function() {
 		if ( this.numPlayers >= 1 ) {
 			if ( this.numPlayers < 2 ) {
-				console.log(this, players);
-				players[this.computerPosition].update(ball);
+				players[this.computerPosition -1].update(ball);
 			}
 			ball.update(players[0].paddle, players[1].paddle);
 		}
@@ -13728,8 +13718,13 @@ var PhoneView = Backbone.View.extend({
 
 	playerRestart: function(playerData) {
 		if ( this.playerId == playerData.playerToLeave ) {
-			console.log('This guy has to reload');
-			window.location.reload();
+			if ( confirm('You lost! play again?') ) {
+				window.location.reload();
+			}
+		} else {
+			if ( confirm('You won! play again?') ) {
+				window.location.reload();
+			}
 		}
 	},
 

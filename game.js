@@ -46,6 +46,8 @@ function playerJoinGame(data) {
 		}
 		data.socketId = this.id;
 		var numPlayers = room.length;
+		console.log(numPlayers);
+		console.log(room);
 
 		this.join(data.gameId);
 

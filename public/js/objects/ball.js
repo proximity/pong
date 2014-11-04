@@ -35,12 +35,6 @@ Ball.prototype.update = function(paddle1, paddle2) {
 
 	var checkPaddleTop;
 	var checkPaddleBottom;
-	// ball hits left wall
-	// ball hits left paddle
-	// ball hits right wall
-	// ball hits right paddle
-	// ball hits top
-	// ball hits floor
 
 	if ( this.y - 5 < 0 ) { // ball hits ceiling
 		this.y = 5;

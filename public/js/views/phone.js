@@ -56,8 +56,13 @@ var PhoneView = Backbone.View.extend({
 
 	playerRestart: function(playerData) {
 		if ( this.playerId == playerData.playerToLeave ) {
-			console.log('This guy has to reload');
-			window.location.reload();
+			if ( confirm('You lost! play again?') ) {
+				window.location.reload();
+			}
+		} else {
+			if ( confirm('You won! play again?') ) {
+				window.location.reload();
+			}
 		}
 	},
 
