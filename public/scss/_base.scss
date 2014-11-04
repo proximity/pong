@@ -19,7 +19,7 @@ body {
 		top: 0;
 		left: 50px;
 		font-family: 'Baumans', Helvetica, sans-serif;
-		color: #fff;
+		color: #0DF705;
 		padding:0;
 		margin:10px 0;
 	}
@@ -29,6 +29,11 @@ body {
 		top: 0;
 		right: 50px;
 		color: #fff;
+	}
+
+	.score {
+		color: #fff;
+		opacity: 0.20;
 	}
 
 	#mobile-container {
